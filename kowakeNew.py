@@ -15,13 +15,21 @@ from deepgram import Deepgram
 import openai
 from storage import upload_to_blob, download_blob
 
+# ── app/send_guard.py を確実に読み込むためのパス設定 ─────────────────
+BASE_DIR = os.path.dirname(__file__)
+APP_DIR = os.path.join(BASE_DIR, "app")
+if APP_DIR not in sys.path:
+    sys.path.insert(0, APP_DIR)
+
+from send_guard import mark_once, unmark  # ★ 冪等ガード
+
 # ── 1) ffmpeg / ffprobe パス検出 ───────────────────────────────
 ffmpeg_path = os.getenv("FFMPEG_PATH")
 ffprobe_path = os.getenv("FFPROBE_PATH")
 
 if not (ffmpeg_path and ffprobe_path):
-    BASE_DIR = os.path.dirname(__file__)
-    BIN_ROOT = os.getenv("FFMPEG_HOME", os.path.join(BASE_DIR, "ffmpeg", "bin"))
+    BASE_DIR2 = os.path.dirname(__file__)
+    BIN_ROOT = os.getenv("FFMPEG_HOME", os.path.join(BASE_DIR2, "ffmpeg", "bin"))
     if platform.system() == "Windows":
         tb = os.path.join(BIN_ROOT, "win")
         ffmpeg_path = os.path.join(tb, "ffmpeg.exe")
@@ -62,24 +70,45 @@ TMP_DIR = tempfile.gettempdir()
 # ──────────────────────────────────────────────────────────────
 # 音声 → Deepgram → OpenAI 整形
 # ──────────────────────────────────────────────────────────────
-async def _transcribe_chunk(idx: int, chunk_path: str) -> str:
+async def _transcribe_chunk(job_id: str, idx: int, chunk_path: str) -> str:
+    """1チャンクの書き起こし（冪等ガードつき）"""
     wav_path = os.path.join(TMP_DIR, f"{uuid.uuid4()}_chunk_{idx}.wav")
     subprocess.run(
         [ffmpeg_path, "-y", "-i", chunk_path, "-ar", "16000", "-ac", "1", "-f", "wav", wav_path],
         check=True,
     )
+
     with open(wav_path, "rb") as f:
         buf = f.read()
-    os.remove(wav_path)
-    os.remove(chunk_path)
 
-    resp = await deepgram_client.transcription.prerecorded(
-        {"buffer": buf, "mimetype": "audio/wav"},
-        {"model": "nova-2-general", "detect_language": True, "diarize": True, "utterances": True},
-    )
-    return "\n".join(
-        f"[Speaker {u['speaker']}] {u['transcript']}" for u in resp["results"]["utterances"]
-    )
+    # 一時ファイルは極力消す（失敗しても続行）
+    try:
+        os.remove(wav_path)
+    except Exception:
+        pass
+    try:
+        os.remove(chunk_path)
+    except Exception:
+        pass
+
+    # ★ 冪等：最初の1回だけ通す（重送・重課金を遮断）
+    if not mark_once(job_id, idx):
+        print(f"[INFO] Skip duplicated send: job={job_id} chunk={idx}", file=sys.stderr, flush=True)
+        return ""
+
+    try:
+        resp = await deepgram_client.transcription.prerecorded(
+            {"buffer": buf, "mimetype": "audio/wav"},
+            {"model": "nova-2-general", "detect_language": True, "diarize": True, "utterances": True},
+        )
+    except Exception as e:
+        # 失敗したらフラグ解除（再送を許可）
+        unmark(job_id, idx)
+        print(f"[ERROR] Deepgram failed: job={job_id} chunk={idx} err={e}", file=sys.stderr, flush=True)
+        raise
+
+    uts = resp.get("results", {}).get("utterances", []) or []
+    return "\n".join(f"[Speaker {u.get('speaker')}] {u.get('transcript')}" for u in uts)
 
 async def transcribe_and_correct(source: str) -> str:
     # 1) URL判定 & ダウンロード
@@ -92,10 +121,15 @@ async def transcribe_and_correct(source: str) -> str:
         ext = os.path.splitext(parsed.path)[1]
         local_audio = os.path.join(TMP_DIR, f"{uuid.uuid4()}{ext}")
         download_blob(safe_url, local_audio)
+        base_key = safe_url
     else:
         local_audio = source
+        base_key = os.path.abspath(source)
 
-    # 2) Fast‑Start 適用
+    # ★ 同一音源で安定する job_id（冪等フラグのキー）
+    job_id = uuid.uuid5(uuid.NAMESPACE_URL, base_key).hex[:16]
+
+    # 2) Fast-Start 適用
     ext = os.path.splitext(local_audio)[1]
     fixed = os.path.join(TMP_DIR, f"{uuid.uuid4()}_fixed{ext}")
     subprocess.run(
@@ -114,7 +148,7 @@ async def transcribe_and_correct(source: str) -> str:
     ]
     duration = float(subprocess.check_output(cmd).strip())
     chunk_len = 10 * 60  # 10分
-    overlap = 1 * 60  # 1分
+    overlap = 1 * 60     # 1分
     step = chunk_len - overlap
 
     # 4) ffmpeg でチャンク分割
@@ -134,9 +168,11 @@ async def transcribe_and_correct(source: str) -> str:
     # 5) 並列送信 → 整形AI
     corrected = []
     for i in range(0, len(chunk_paths), 6):
-        tasks = [_transcribe_chunk(idx, path) for idx, path in chunk_paths[i : i + 6]]
+        tasks = [_transcribe_chunk(job_id, idx, path) for idx, path in chunk_paths[i: i + 6]]
         results = await asyncio.gather(*tasks)
         for text in results:
+            if not text:
+                continue  # duplicated / 空は無視
             prompt = (
                 "以下の音声書き起こしを自然な日本語にしてください。\n\n"
                 f"{text}\n\n"
@@ -157,8 +193,14 @@ async def transcribe_and_correct(source: str) -> str:
 
     # クリーンアップ
     if source.lower().startswith("http"):
-        os.remove(local_audio)
-    os.remove(fixed)
+        try:
+            os.remove(local_audio)
+        except Exception:
+            pass
+    try:
+        os.remove(fixed)
+    except Exception:
+        pass
 
     # 置換ステップ追加
     replaced_text, hit = _apply_keyword_replacements(full)
@@ -223,7 +265,6 @@ def update_keyword_by_id(id, reading, wrong_examples, keyword):
             break
     _save_keywords_to_blob()
 
-
 def load_keywords_from_file():
     global _KEYWORDS_DB
     try:
@@ -233,7 +274,7 @@ def load_keywords_from_file():
             download_blob(BLOB_JSON_PATH, tmp)
             print(f"[INFO] Blob からダウンロード完了 → {tmp}")
         except Exception as e:
-            print(f"[INFO] Blob 取得ス킥: {e}")
+            print(f"[INFO] Blob 取得スキップ: {e}")
 
         local_json = os.path.abspath("keywords.json")
         candidate = local_json if os.path.exists(local_json) else tmp
@@ -246,7 +287,6 @@ def load_keywords_from_file():
     except Exception as e:
         print(f"[WARN] キーワード読込失敗: {e}")
         _KEYWORDS_DB = []
-
 
 def _save_keywords_to_blob():
     try:

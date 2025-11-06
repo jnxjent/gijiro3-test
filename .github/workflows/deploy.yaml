@@ -1,3 +1,4 @@
+
 name: Deploy Gijiro3 (Web & Function)
 
 on:
@@ -7,23 +8,24 @@ on:
 
 jobs:
   # ───────────────────────────────────────────────────────────
-  # 1) Deploy Web App
+  # 1) Deploy Web App（ZipDeploy + clean:true で安全に差分反映）
   # ───────────────────────────────────────────────────────────
   webapp:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # （必要なら残す。ビルドが不要な場合は削除可）
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
@@ -31,20 +33,31 @@ jobs:
           source .venv/bin/activate
           pip install -r requirements.txt
 
+      # Web用ZIPを作成（Function 等は除外）
+      - name: Build web artifact (zip)
+        run: |
+          zip -r build.zip . \
+            -x "ProcessAudioFunction/**" \
+               ".git/**" ".github/**" ".venv/**" \
+               "*/__pycache__/**" "*.log" "*.tar" "*.tar.gz" "*.zip" \
+               "GIJIRO BACKUP/**" "GIJIRO_BACKUP/**" "backup/**" "BACKUP/**"
+
+      # ZipDeploy（wwwrootへ展開）＋ clean:true で旧ファイル除去
       - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          package: .
+          package: build.zip
+          clean: true
 
   # ───────────────────────────────────────────────────────────
-  # 2) Deploy Function App
+  # 2) Deploy Function App（従来どおり）
   # ───────────────────────────────────────────────────────────
   functionapp:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Azure Login
         uses: azure/login@v1
@@ -54,7 +67,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install function requirements
         working-directory: ProcessAudioFunction
@@ -68,3 +81,4 @@ jobs:
         with:
           app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}
           package: ProcessAudioFunction
+

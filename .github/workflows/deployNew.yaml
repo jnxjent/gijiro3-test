@@ -1,25 +1,16 @@
-name: Deploy Gijiro3 TEST (Web & Function)
+
+name: Deploy Gijiro3 (Web & Function)
 
 on:
   push:
-    branches: [ flex-test ]
-    paths:
-      - "web/**"
-      - "ProcessAudioFunction/**"
-      - ".github/workflows/deploy-test.yml"
-  workflow_dispatch: {}
-
-env:
-  AZURE_WEBAPP_NAME_TEST: gijiro-webapp-flex-test
-  AZURE_FUNCTIONAPP_NAME_TEST: gijiro-flex-plan
-
-  DEPLOY_STORAGE: ${{ secrets.DEPLOY_STORAGE_ACCOUNT }}
-  DEPLOY_CONTAINER: deploy
-  STORAGE_RG: general51
-  WEBAPP_RG: ai2
+    branches:
+      - master
 
 jobs:
-  webapp-test:
+  # ───────────────────────────────────────────────────────────
+  # 1) Deploy Web App（ZipDeploy + clean:true で安全に差分反映）
+  # ───────────────────────────────────────────────────────────
+  webapp:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,62 +21,39 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Resolve package path
-        run: |
-          if [ -d "web" ] && [ "$(ls -A web)" ]; then
-            echo "PKG_PATH=web" >> $GITHUB_ENV
-          else
-            echo "PKG_PATH=." >> $GITHUB_ENV
-          fi
-
-      - name: Create ZIP for RFP
-        run: |
-          mkdir -p artifacts
-          zip -r artifacts/site.zip $PKG_PATH -x ".git/*" ".github/*"
-
-      - name: Deploy via Run From Package
-        uses: azure/cli@v2
+      # （必要なら残す。ビルドが不要な場合は削除可）
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          inlineScript: |
-            SA='${{ env.DEPLOY_STORAGE }}'
-            WRG='${{ env.WEBAPP_RG }}'
-            APP='${{ env.AZURE_WEBAPP_NAME_TEST }}'
-            CONTAINER='${{ env.DEPLOY_CONTAINER }}'
-            FILE="site-$(date +%Y%m%d%H%M%S).zip"
+          python-version: "3.12"
 
-            # コンテナ作成（存在しなければ）
-            az storage container create \
-              --name $CONTAINER \
-              --account-name $SA \
-              --auth-mode login \
-              --public-access off
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
 
-            # ZIPアップロード
-            az storage blob upload \
-              --account-name $SA \
-              --auth-mode login \
-              --container-name $CONTAINER \
-              --name $FILE \
-              --file artifacts/site.zip \
-              --overwrite
+      # Web用ZIPを作成（Function 等は除外）
+      - name: Build web artifact (zip)
+        run: |
+          zip -r build.zip . \
+            -x "ProcessAudioFunction/**" \
+               ".git/**" ".github/**" ".venv/**" \
+               "*/__pycache__/**" "*.log" "*.tar" "*.tar.gz" "*.zip" \
+               "GIJIRO BACKUP/**" "GIJIRO_BACKUP/**" "backup/**" "BACKUP/**"
 
-            # 短命 SAS 発行
-            EXP=$(date -u -d "+20 minutes" '+%Y-%m-%dT%H:%MZ')
-            SAS=$(az storage blob generate-sas \
-              --account-name $SA \
-              --container-name $CONTAINER \
-              --name $FILE \
-              --permissions r \
-              --expiry "$EXP" \
-              --https-only -o tsv)
+      # ZipDeploy（wwwrootへ展開）＋ clean:true で旧ファイル除去
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          package: build.zip
+          clean: true
 
-            PKG_URL="https://${SA}.blob.core.windows.net/${CONTAINER}/${FILE}?${SAS}"
-            echo "Deploying package URL: $PKG_URL"
-
-            az webapp config appsettings set -g $WRG -n $APP --settings WEBSITE_RUN_FROM_PACKAGE="$PKG_URL"
-            az webapp restart -g $WRG -n $APP
-
-  functionapp-test:
+  # ───────────────────────────────────────────────────────────
+  # 2) Deploy Function App（従来どおり）
+  # ───────────────────────────────────────────────────────────
+  functionapp:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -95,28 +63,22 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Verify Function App exists
-        run: |
-          az resource show \
-            -g ${{ env.WEBAPP_RG }} \
-            -n "${{ env.AZURE_FUNCTIONAPP_NAME_TEST }}" \
-            --resource-type "Microsoft.Web/sites" \
-            --query "{id:id, location:location}" -o table
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
-      - name: Install function requirements into package
+      - name: Install function requirements
         working-directory: ProcessAudioFunction
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt -t .python_packages/lib/site-packages
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
 
-      - name: Deploy to Azure Function (TEST)
+      - name: Deploy to Azure Function
         uses: azure/functions-action@v1
         with:
-          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME_TEST }}
+          app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}
           package: ProcessAudioFunction
+

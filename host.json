@@ -8,23 +8,23 @@
   "extensions": {
     "queues": {
       "messageEncoding": "None",
-      "maxDequeueCount": 100,
-      "visibilityTimeout": "01:00:00"
+      "maxDequeueCount": 3,
+      "visibilityTimeout": "00:20:00"
     }
   },
   "logging": {
     "applicationInsights": {
       "samplingSettings": {
-        "isEnabled": false       // 全ログを取得
+        "isEnabled": false
       }
     },
     "logLevel": {
       "default": "Information",
-      "Host.Results": "Trace",     // キュー／タイマーのポーリング結果
-      "Host.Aggregator": "Trace",  // ホストの内部集計
-      "Function": "Trace",         // 関数呼び出し開始／終了
-      "WebJobs.Script": "Trace",   // WebJobs ランタイム全般
-      "Worker": "Trace"            // Python ワーカーの詳細
+      "Host.Results": "Trace",
+      "Host.Aggregator": "Trace",
+      "Function": "Trace",
+      "WebJobs.Script": "Trace",
+      "Worker": "Trace"
     }
   }
 }
