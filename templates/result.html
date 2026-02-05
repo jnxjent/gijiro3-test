@@ -85,11 +85,12 @@
         const res = await fetch(`/api/process/${jobId}/status`);
         if (res.ok) {
           const data = await res.json();
-          if (data.status === "Completed" && data.resultUrl) {
-            downloadBtn.href = data.resultUrl;
+        if (data.status === "Completed") {
+          // ★ 変更点: Blob URL ではなくプロキシエンドポイントを使う
+          downloadBtn.href = `/api/process/${jobId}/download`;
             downloadBtn.classList.remove("hidden");
             statusText.innerText = "以下のリンクからダウンロードできます。";
-            return; // 完了したらポーリング停止
+          return;
           } else {
             statusText.innerText = "ファイルは生成中です... （ステータス: " + data.status + "）";
           }
@@ -99,7 +100,6 @@
       } catch (error) {
         statusText.innerText = "結果の取得中にエラーが発生しました。";
       }
-      // 3秒後に再度チェック
       setTimeout(checkStatus, 3000);
     }
 

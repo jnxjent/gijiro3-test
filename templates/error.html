@@ -1,14 +1,162 @@
 <!-- templates/error.html -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>エラー</title>
+  <meta charset="utf-8" />
+  <meta name="robots" content="noindex" />
+  <title>{{ title or "エラー" }} - {{ code or "" }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #fafafa;
+      --fg: #111;
+      --muted: #666;
+      --card: #fff;
+      --border: #e7e7e7;
+      --accent: #2563eb;
+      --warn: #b91c1c;
+      --note: #0f766e;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 32px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      color: var(--fg); background: var(--bg);
+    }
+    .wrap { max-width: 860px; margin: 0 auto; }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 24px 24px 12px;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+    }
+    h1 { margin: 0 0 6px; font-size: 20px; }
+    .sub { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+    .note {
+      background: #ecfeff; border: 1px solid #a5f3fc; color: #065f46;
+      border-radius: 10px; padding: 14px 16px; margin: 8px 0 16px;
+    }
+    .note ul { margin: 8px 0 0 18px; }
+    .kv {
+      display: grid; grid-template-columns: 140px 1fr; gap: 6px 12px; margin: 10px 0 12px;
+      font-size: 13px;
+    }
+    .kv dt { color: var(--muted); }
+    .kv dd { margin: 0; font-family: var(--mono); }
+    details { margin: 10px 0 0; }
+    summary { cursor: pointer; color: var(--accent); }
+    pre {
+      background: #0b1020; color: #d1e7ff; padding: 12px; border-radius: 8px;
+      overflow: auto; font-family: var(--mono); font-size: 12px; line-height: 1.5;
+      border: 1px solid #1f2a44;
+    }
+    .actions {
+      display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px;
+    }
+    .btn {
+      display: inline-block; text-decoration: none; font-size: 14px;
+      padding: 10px 14px; border-radius: 9px; border: 1px solid var(--border);
+      color: var(--fg); background: #fff;
+    }
+    .btn.primary { border-color: #93c5fd; background: #eff6ff; }
+    .btn:hover { filter: brightness(0.98); }
+    .footer {
+      text-align: right; color: var(--muted); font-size: 12px; padding: 10px 4px 0;
+    }
+  </style>
 </head>
 <body>
-    <h1>エラーが発生しました</h1>
-    <p>{{ message }}</p>
-    <hr>
-    <p><a href="/">戻る</a></p>
+  <div class="wrap">
+    <div class="card">
+      <h1>{{ title or "処理に失敗しました" }}</h1>
+      <div class="sub">
+        エラー番号：<strong>{{ code or "不明" }}</strong>
+        {% if now %} / 発生時刻：{{ now }}{% endif %}
+      </div>
+
+      <!-- ▼▼ エラー内容に応じた説明（強化版） ▼▼ -->
+      <div class="note">
+        <div style="font-weight:600; margin-bottom:8px;">処理エラーです。エラー番号をご確認ください。</div>
+
+        {% if code == 413 %}
+          <div>413：アップロード上限超過</div>
+          <ul>
+            <li>音声ファイルの容量が規定(180MB以内）をオーバーしています。</li>
+            <li>ファイルを短くする／圧縮する／等行い再度お試しください。</li>
+          </ul>
+
+        {% elif code == 504 %}
+          <div>504：タイムアウト</div>
+          <ul>
+            <li>処理が時間内に完了しませんでした。</li>
+            <li>回線状況を改善のうえ、しばらく時間をおいて再度実行してください。</li>
+          </ul>
+
+        {% elif code == 500 %}
+          <div>500：サーバー内部エラー</div>
+          <ul>
+            <li>一時的な不具合の可能性があります。時間をおいて再試行してください。</li>
+          </ul>
+
+        {% elif code == 400 %}
+          <div>400：不正なリクエスト</div>
+          <ul>
+            <li>必須ファイルの未選択や形式不備の可能性があります。</li>
+            <li>音声（.wav/.mp4/.m4a/.mp3）とテンプレート（.docx/.doc）を正しく選択して再試行してください。</li>
+          </ul>
+
+        {% elif code == 408 %}
+          <div>408：リクエストタイムアウト</div>
+          <ul>
+            <li>ネットワークが不安定な可能性があります。</li>
+            <li>通信環境を確認し、再度お試しください。</li>
+          </ul>
+
+        {% elif code == 429 %}
+          <div>429：リクエスト過多</div>
+          <ul>
+            <li>短時間に処理が集中しています。</li>
+            <li>しばらく時間をおいてから再実行してください。</li>
+          </ul>
+
+        {% elif code == 502 or code == 503 %}
+          <div>{{ code }}：上流エラー／高負荷</div>
+          <ul>
+            <li>一時的な過負荷または上流サービスの障害です。</li>
+            <li>時間をおいて再実行してください。</li>
+          </ul>
+
+        {% else %}
+          <div>{{ code }}：未分類のエラー</div>
+          <ul>
+            <li>一時的な不具合の可能性があります。時間をおいて再実行してください。</li>
+            <li>解消しない場合はエラー番号（{{ code }}）と表示時刻、可能ならジョブIDを添えて管理者へご連絡ください。</li>
+          </ul>
+        {% endif %}
+      </div>
+      <!-- ▲▲ ここまで説明コメント ▲▲ -->
+
+      <dl class="kv">
+        <dt>ジョブID</dt><dd>{{ job_id or "-" }}</dd>
+        <dt>リクエスト</dt><dd>{{ path or request.path if request else "-" }}</dd>
+        <dt>メッセージ</dt><dd>{{ (message or "") | string }}</dd>
+      </dl>
+
+      <details>
+        <summary>詳細を表示</summary>
+        <pre>{{ (traceback or message or "") | string }}</pre>
+      </details>
+
+      <div class="actions">
+        <a class="btn" href="javascript:location.reload()">再読み込み</a>
+        <a class="btn primary" href="/">トップへ戻る</a>
+        <a class="btn" href="/healthz">ヘルスチェック</a>
+      </div>
+
+      <div class="footer">
+        &copy; Gijiro — error page
+      </div>
+    </div>
+  </div>
 </body>
 </html>
