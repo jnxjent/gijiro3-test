@@ -8,6 +8,9 @@
   <!-- ビルド／デプロイ時に CI 等で置換 -->
   <meta name="function-key" content="%FUNCTION_KEY%">
 
+  <!-- ★ フロント側容量上限 → サーバーから渡す -->
+  <meta name="max-upload-bytes" content="{{ max_bytes }}"> 
+
   <style>
     /* ───────── ベース ───────── */
     body{
@@ -28,10 +31,8 @@
     }
     .logo{width:250px;height:auto;margin:-10px 0 10px -10px;}
 
-    /* ← ★ 赤ブロック：上に約 2px */
     p{margin:3px 0 8px;font-size:14px;color:#555;line-height:1.4;}
 
-    /* ───────── 入力欄 ───────── */
     .file-input{display:flex;align-items:center;margin:8px auto;}
     .file-input label{
       width:50px;text-align:right;margin-right:8px;font-size:14px;font-weight:bold;
@@ -40,7 +41,6 @@
       padding:8px;border:1px solid #ddd;border-radius:5px;font-size:14px;
     }
 
-    /* ───────── ボタン類 ───────── */
     button{
       background:#007BFF;color:#fff;border:none;
       padding:8px 16px;border-radius:5px;font-size:14px;font-weight:bold;
@@ -48,14 +48,12 @@
     }
     button:hover{background:#0056b3;}
 
-    /* ★① 青ボタンを中央に */
     .upload-btn{margin:14px auto 0;display:block;}
 
     .download-link{margin:12px 0;font-size:14px;}
     .download-link a{color:#007BFF;text-decoration:none;font-weight:bold;}
     .download-link a:hover{text-decoration:underline;}
 
-    /* ★② 緑ブロックを少し上にして中央揃え */
     .keyword-button{margin-top:14px;text-align:center;}
     .keyword-button button{
       background:#28a745;display:block;margin:0 auto;border:none;
@@ -85,7 +83,6 @@
       <input type="file" id="word_file" accept=".doc,.docx">
     </div>
 
-    <!-- ★① -->
     <button class="upload-btn" onclick="startUpload()">アップロード</button>
     <div class="status-msg" id="status_msg"></div>
 
@@ -95,7 +92,6 @@
          download rel="noopener noreferrer">こちら</a>&nbsp;からダウンロード
     </div>
 
-    <!-- ★② -->
     <div class="keyword-button">
       <button onclick="location.href='/keywords'">キーワード登録</button>
       <div class="keyword-desc">
@@ -105,31 +101,87 @@
   </div>
 
   <script>
-    /* -------------------- JS そのまま -------------------- */
-    const FUNCTION_KEY = document
-      .querySelector('meta[name="function-key"]')
-      .getAttribute('content');
+    // ===== 共通ヘルパ =====
+    const FUNCTION_KEY = document.querySelector('meta[name="function-key"]').getAttribute('content');
+
+    // ★ ここだけ変更 → サーバー値を直接使う
+    const MAX_UPLOAD_BYTES = {{ max_bytes|int }};
+
+    function bytesToMB(b){ return Math.round((b/1024/1024)*10)/10; }
+
+    function gotoError(code, message, jobId) {
+      const params = new URLSearchParams({
+        code: String(code || 500),
+        message: (message || "").slice(0, 500),
+        path: location.pathname
+      });
+      if (jobId) params.set("job_id", jobId);
+      location.href = "/error?" + params.toString();
+    }
+
+    async function fetchJsonWithErrors(url, init, fallbackCode=500) {
+      try {
+        const res = await fetch(url, init);
+        const ct = res.headers.get("content-type") || "";
+        const maybeJson = ct.includes("application/json");
+        let data = null;
+
+        if (maybeJson) {
+          data = await res.json().catch(()=>null);
+        } else {
+          data = { message: await res.text().catch(()=>null) };
+        }
+
+        if (!res.ok) {
+          const code = res.status || fallbackCode;
+          const msg  = (data && (data.message || data.error)) || `HTTP ${code} error`;
+          gotoError(code, msg);
+          return Promise.reject(new Error(msg));
+        }
+        return data ?? {};
+      } catch (e) {
+        gotoError(408, "ネットワークが不安定です。再度お試しください。");
+        throw e;
+      }
+    }
 
     async function startUpload(){
-      const audioInput = document.getElementById("audio_file");
-      const wordInput  = document.getElementById("word_file");
-      const statusMsg  = document.getElementById("status_msg");
+      const audioFile = document.getElementById("audio_file").files[0];
+      const wordFile  = document.getElementById("word_file").files[0];
+      const statusMsg = document.getElementById("status_msg");
 
-      const audioFile = audioInput.files[0];
-      const wordFile  = wordInput.files[0];
-      if(!audioFile||!wordFile){alert("両方のファイルを選択してください。");return;}
+      if(!audioFile||!wordFile){
+        alert("両方のファイルを選択してください。");
+        return;
+      }
+
+      const totalBytes = (audioFile.size||0) + (wordFile.size||0);
+      if (totalBytes > MAX_UPLOAD_BYTES) {
+        gotoError(413, `アップロード上限(${bytesToMB(MAX_UPLOAD_BYTES)}MB)を超えています。現在: ${bytesToMB(totalBytes)}MB`);
+        return;
+      }
 
       statusMsg.innerText="アップロード中...";
 
       async function uploadToBlob(file,path,isAudio=true){
-        const sasRes = await fetch(`/api/blob/sas?name=${encodeURIComponent(path)}`);
-        const {uploadUrl,blobUrl}=await sasRes.json();
+        const sasRes = await fetchJsonWithErrors(`/api/blob/sas?name=${encodeURIComponent(path)}`, { method:"GET" }, 502);
+        const { uploadUrl, blobUrl } = sasRes || {};
+        if (!uploadUrl || !blobUrl) {
+          gotoError(500, "アップロード先の取得に失敗しました。");
+          throw new Error("SAS missing");
+        }
 
         const headers={"x-ms-blob-type":"BlockBlob"};
         headers["Content-Type"]=file.type||
           (isAudio?"audio/mp4":
            "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-        await fetch(uploadUrl,{method:"PUT",headers,body:file});
+
+        const putRes = await fetch(uploadUrl,{method:"PUT",headers,body:file}).catch(()=>null);
+        if (!putRes || !putRes.ok) {
+          const code = putRes ? putRes.status : 408;
+          gotoError(code, "ストレージへのアップロードに失敗しました。");
+          throw new Error("Blob PUT failed");
+        }
         return blobUrl;
       }
 
@@ -138,18 +190,26 @@
         const wordBlobUrl =await uploadToBlob(wordFile ,"word/"+wordFile.name ,false);
         statusMsg.innerText="ジョブ登録中...";
 
-        const res=await fetch("/api/process",{
+        const data = await fetchJsonWithErrors("/api/process",{
           method:"POST",
-          headers:{"Content-Type":"application/json","x-functions-key":FUNCTION_KEY},
+          headers:{
+            "Content-Type":"application/json",
+            "x-functions-key":FUNCTION_KEY
+          },
           body:JSON.stringify({blobUrl:audioBlobUrl,templateBlobUrl:wordBlobUrl})
-        });
-        const data=await res.json();
+        }, 500);
+
+        if (!data || !data.jobId) {
+          gotoError(500, "ジョブ登録に失敗しました。");
+          return;
+        }
+
         statusMsg.innerText=`ジョブID: ${data.jobId} 登録完了。処理中...`;
         pollForResult(data.jobId);
+
       }catch(err){
         console.error(err);
         statusMsg.innerText="アップロードまたは処理開始に失敗しました。";
-        alert("アップロード中にエラーが発生しました。");
       }
     }
 
@@ -157,16 +217,27 @@
       const statusMsg=document.getElementById("status_msg");
       const interval=setInterval(async()=>{
         try{
-          const res=await fetch(`/api/process/${jobId}/status`,
-                                 {headers:{"x-functions-key":FUNCTION_KEY}});
-          if(res.status===200){
+          const res = await fetch(`/api/process/${jobId}/status`,
+                                  {headers:{"x-functions-key":FUNCTION_KEY}});
+          if (res.status === 200) {
             clearInterval(interval);
             statusMsg.innerText="処理完了！結果をダウンロード中...";
             window.location.href="/results/"+jobId;
+          } else if (res.status === 202) {
+          } else if (res.status === 504) {
+            clearInterval(interval);
+            gotoError(504, "処理が時間内に完了しませんでした。", jobId);
+          } else if (res.status === 413) {
+            clearInterval(interval);
+            gotoError(413, "アップロード上限を超えています。", jobId);
+          } else if (res.status >= 400) {
+            clearInterval(interval);
+            const msg = await res.text().catch(()=> "処理中にエラーが発生しました。");
+            gotoError(res.status, msg, jobId);
           }
         }catch(e){
           clearInterval(interval);
-          statusMsg.innerText="結果の取得中にエラーが発生しました。";
+          gotoError(408, "結果の取得中にネットワークエラーが発生しました。", jobId);
         }
       },3000);
     }

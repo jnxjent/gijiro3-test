@@ -8,23 +8,23 @@
   "extensions": {
     "queues": {
       "messageEncoding": "None",
-      "maxDequeueCount": 3,
-      "visibilityTimeout": "00:20:00"
+      "maxDequeueCount": 100,
+      "visibilityTimeout": "01:00:00"
     }
   },
   "logging": {
     "applicationInsights": {
       "samplingSettings": {
-        "isEnabled": false
+        "isEnabled": false       
       }
     },
     "logLevel": {
       "default": "Information",
-      "Host.Results": "Trace",
-      "Host.Aggregator": "Trace",
-      "Function": "Trace",
-      "WebJobs.Script": "Trace",
-      "Worker": "Trace"
+      "Host.Results": "Trace",     
+      "Host.Aggregator": "Trace",  
+      "Function": "Trace",         
+      "WebJobs.Script": "Trace",   
+      "Worker": "Trace"            
     }
   }
 }

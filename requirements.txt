@@ -44,7 +44,7 @@ urllib3==2.3.0
 websockets==14.2
 Werkzeug==2.2.3
 yarl==1.18.3
-tiktoken==0.6.0
+#tiktoken==0.5.1
 
 imageio[ffmpeg]==2.37.0  # <- imageio の拡張機能を含む方を採用
 ffmpeg-python==0.2.0
