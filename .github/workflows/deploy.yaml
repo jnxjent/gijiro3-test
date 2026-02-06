@@ -17,20 +17,22 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build web artifact (zip)
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
         run: |
-          zip -r build.zip . \
-            -x "ProcessAudioFunction/**" \
-               ".git/**" ".github/**" \
-               "*/__pycache__/**" "*.log" "*.tar" "*.tar.gz" "*.zip" \
-               "GIJIRO BACKUP/**" "GIJIRO_BACKUP/**" "backup/**" "BACKUP/**"
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          package: build.zip
-          clean: true
+          package: .
 
   functionapp:
     runs-on: ubuntu-latest
@@ -43,6 +45,18 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install function requirements
+        working-directory: ProcessAudioFunction
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
 
       - name: Deploy to Azure Function
         uses: azure/functions-action@v1
