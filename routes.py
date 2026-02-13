@@ -18,19 +18,17 @@ from kowake import (
     update_keyword_by_id,
 )
 
-# ★ 追加：.env の容量制限を index に渡すため
 from config import MAX_CONTENT_LENGTH_BYTES
 import ipaddress
 
-# 環境変数から許可IPリストを取得（カンマ区切り、CIDR対応）
 ALLOWED_DOWNLOAD_IPS = [
     ip.strip()
     for ip in os.getenv("ALLOWED_DOWNLOAD_IPS", "").split(",")
     if ip.strip()
 ]
 
+
 def ip_allowed(client_ip: str, allowed_list: list[str]) -> bool:
-    """単一IP・複数IP・CIDR すべて対応"""
     try:
         ip = ipaddress.ip_address(client_ip)
     except ValueError:
@@ -44,10 +42,29 @@ def ip_allowed(client_ip: str, allowed_list: list[str]) -> bool:
             continue
     return False
 
+
 def setup_routes(app):
     logger = logging.getLogger("routes")
     logging.basicConfig(level=logging.INFO)
     logger.info("✔ setup_routes() 開始")
+
+    # ★★★ ここが今回の本丸：Flask標準キーを必ず設定 ★★★
+    # どこかが app.config['MAX_CONTENT_LENGTH'] を参照しても KeyError にならない
+    app.config.setdefault("MAX_CONTENT_LENGTH", int(MAX_CONTENT_LENGTH_BYTES))
+
+    # ─────────────────────────────────────────────
+    # ★ ユーザー識別（email）
+    # ─────────────────────────────────────────────
+    def _get_user_email() -> str | None:
+        email = (
+            request.args.get("email")
+            or request.form.get("email")
+            or request.headers.get("X-User-Email")
+            or request.headers.get("X-MS-CLIENT-PRINCIPAL-NAME")
+            or request.headers.get("X-Email")
+        )
+        email = (email or "").strip().lower()
+        return email or None
 
     @app.before_request
     def restrict_download_by_ip():
@@ -65,7 +82,6 @@ def setup_routes(app):
             else:
                 client_ip = request.remote_addr
 
-            # ポート番号除去（IPv4:PORT のみ）
             if client_ip and "." in client_ip and client_ip.count(":") == 1:
                 client_ip = client_ip.rsplit(":", 1)[0]
 
@@ -76,17 +92,19 @@ def setup_routes(app):
             if not ip_allowed(client_ip, ALLOWED_DOWNLOAD_IPS):
                 abort(403, "社外からのダウンロードは許可されていません")
 
-    # キーワードDBの初期ロード
-    load_keywords_from_file()
+    # legacy だけロード（任意）
+    try:
+        load_keywords_from_file(None)
+    except Exception:
+        pass
 
     # ─── トップページ ───────────────────────────
     @app.route("/", methods=["GET"])
     def index():
         logger.info("✔ / にアクセスされました")
-        # ★ ここに max_bytes を追加するだけ（サーバー側の挙動は不変）
-        return render_template("index.html", max_bytes=MAX_CONTENT_LENGTH_BYTES)
+        return render_template("index.html", max_bytes=app.config["MAX_CONTENT_LENGTH"])
 
-    # ─── ヘルスチェック（/health と /healthz を両方用意） ───
+    # ─── ヘルスチェック ───
     @app.route("/health", methods=["GET"])
     def health():
         logger.info("✔ /health にアクセス")
@@ -97,12 +115,12 @@ def setup_routes(app):
         logger.info("✔ /healthz にアクセス")
         return jsonify({"status": "OK"}), 200
 
-    # ─── 結果ページ（静的テンプレート表示） ─────────────
+    # ─── 結果ページ ───
     @app.route("/results/<job_id>", methods=["GET"])
     def result_page(job_id):
         return render_template("result.html", job_id=job_id)
 
-    # ─── Azure AD コールバック（ダミー） ───────────────
+    # ─── Azure AD コールバック（ダミー） ───
     @app.route("/api/auth/callback/azure-ad", methods=["GET", "POST"])
     def azure_ad_callback():
         try:
@@ -118,16 +136,12 @@ def setup_routes(app):
                 return jsonify({"error": "認証コードがありません"}), 400
 
             logger.info(f"Azure AD 認証成功！code={code}, state={state}")
-            return jsonify({
-                "message": "Azure AD 認証成功！",
-                "code": code,
-                "state": state
-            })
+            return jsonify({"message": "Azure AD 認証成功！", "code": code, "state": state})
         except Exception as e:
             logger.error(f"エラー発生: {e}")
             return jsonify({"error": f"エラー発生: {e}"}), 500
 
-    # ─── Blob SAS 発行 ────────────────────────
+    # ─── Blob SAS 発行 ───
     @app.route("/api/blob/sas", methods=["GET"])
     def api_blob_sas():
         blob_name = request.args.get("name")
@@ -137,7 +151,7 @@ def setup_routes(app):
         sas_info = generate_upload_sas(blob_name)
         return jsonify(sas_info)
 
-    # ─── 非同期ジョブ登録 ─────────────────────
+    # ─── 非同期ジョブ登録 ───
     @app.route("/api/process", methods=["POST"])
     def api_process():
         data = request.get_json(silent=True) or {}
@@ -148,12 +162,14 @@ def setup_routes(app):
             logger.error("ジョブ登録エラー: blobUrl または templateBlobUrl が不足")
             return jsonify({"error": "blobUrl and templateBlobUrl are required"}), 400
 
+        email = (data.get("email") or "").strip().lower() or None
+
         job_id = uuid.uuid4().hex
-        enqueue_processing(blob_url, template_blob_url, job_id)
-        logger.info(f"✔ ジョブ登録完了: job_id={job_id}")
+        enqueue_processing(blob_url, template_blob_url, job_id, email=email)
+        logger.info(f"✔ ジョブ登録完了: job_id={job_id} email={email}")
         return jsonify({"jobId": job_id}), 202
 
-    # ─── ステータス確認 ───────────────────────
+    # ─── ステータス確認 ───
     @app.route("/api/process/<job_id>/status", methods=["GET"])
     def api_status(job_id):
         result_blob = f"processed/{job_id}.docx"
@@ -161,7 +177,7 @@ def setup_routes(app):
             blob_client = BlobClient.from_connection_string(
                 os.getenv("AZURE_STORAGE_CONNECTION_STRING"),
                 os.getenv("AZURE_STORAGE_CONTAINER_NAME"),
-                result_blob
+                result_blob,
             )
             if blob_client.exists():
                 return jsonify({"status": "Completed", "resultUrl": blob_client.url}), 200
@@ -171,7 +187,7 @@ def setup_routes(app):
             logger.error(f"ステータス確認中にエラー: {e}")
             return jsonify({"error": str(e)}), 500
 
-    # ─── 同期で待つ（必要なら利用） ─────────────────
+    # ─── 同期 wait ───
     @app.route("/api/process/<job_id>/wait", methods=["GET"])
     def api_wait_for_result(job_id):
         max_wait_sec = 600
@@ -181,7 +197,7 @@ def setup_routes(app):
         blob_client = BlobClient.from_connection_string(
             os.getenv("AZURE_STORAGE_CONNECTION_STRING"),
             os.getenv("AZURE_STORAGE_CONTAINER_NAME"),
-            result_blob
+            result_blob,
         )
 
         elapsed = 0
@@ -199,59 +215,61 @@ def setup_routes(app):
 
         return jsonify({"error": "処理が完了しませんでした"}), 504
 
-    
-  # ─── キーワード管理 ────────────────────────
+    # ─── キーワード管理（ユーザー別） ───
     @app.route("/keywords", methods=["GET"])
     def keywords_page():
-        keywords = get_all_keywords()
-        print(f"🟡 /keywords loaded = {len(keywords)}")  # ログ
-        return render_template("keywords.html", keywords=keywords)
+        email = _get_user_email()
+        keywords = get_all_keywords(email=email)
+        print(f"🟡 /keywords loaded = {len(keywords)} email={email}")
+        return render_template(
+            "keywords.html",
+            keywords=keywords,
+            email=email,
+            max_bytes=app.config["MAX_CONTENT_LENGTH"],
+        )
 
     @app.route("/register_keyword", methods=["POST"])
     def register_keyword():
+        email = _get_user_email()
         reading = request.form.get("reading")
         wrong_examples = request.form.get("wrong_examples")
         keyword = request.form.get("keyword")
 
-        before = len(get_all_keywords())
-        print(f"🟢 register before = {before}")
-
-        add_keyword(reading, wrong_examples, keyword)
-
-        after = len(get_all_keywords())
-        print(f"🟢 register after  = {after}")
-        return redirect("/keywords")
+        add_keyword(reading, wrong_examples, keyword, email=email)
+        return redirect(f"/keywords?email={email}" if email else "/keywords")
 
     @app.route("/delete_keyword", methods=["POST"])
     def delete_keyword():
+        email = _get_user_email()
         keyword_id = request.form.get("id")
 
-        before = len(get_all_keywords())
-        print(f"🔴 delete  before = {before}")
-
-        delete_keyword_by_id(keyword_id)
-
-        after = len(get_all_keywords())
-        print(f"🔴 delete  after  = {after}")
-        return redirect("/keywords")
+        delete_keyword_by_id(keyword_id, email=email)
+        return redirect(f"/keywords?email={email}" if email else "/keywords")
 
     @app.route("/edit_keyword", methods=["GET"])
     def edit_keyword():
+        email = _get_user_email()
         keyword_id = request.args.get("id")
-        keyword = get_keyword_by_id(keyword_id)
-        return render_template("edit_keyword.html", keyword=keyword)
+        keyword = get_keyword_by_id(keyword_id, email=email)
+        return render_template(
+            "edit_keyword.html",
+            keyword=keyword,
+            email=email,
+            max_bytes=app.config["MAX_CONTENT_LENGTH"],
+        )
 
     @app.route("/update_keyword", methods=["POST"])
     def update_keyword():
+        email = _get_user_email()
         keyword_id = request.form.get("id")
         reading = request.form.get("reading")
         wrong_examples = request.form.get("wrong_examples")
         keyword_text = request.form.get("keyword")
 
-        update_keyword_by_id(keyword_id, reading, wrong_examples, keyword_text)
-        return redirect("/keywords")
+        update_keyword_by_id(keyword_id, reading, wrong_examples, keyword_text, email=email)
+        return redirect(f"/keywords?email={email}" if email else "/keywords")
 
-    # ─── エラーページ描画（フロントからの /error?code=... に対応） ───
+    # ─── エラーページ ───
     @app.route("/error", methods=["GET"])
     def error_page():
         code = request.args.get("code", default=500, type=int)
@@ -268,11 +286,11 @@ def setup_routes(app):
                 path=path,
                 job_id=job_id,
                 now=now,
+                max_bytes=app.config["MAX_CONTENT_LENGTH"],
             ),
             code,
         )
 
-    # ─── 共通エラーハンドラ（サーバー起因の未捕捉も UI 化） ───
     @app.errorhandler(404)
     def _h_404(e):
         logger.error(f"404 Not Found: {request.path}")
@@ -283,6 +301,7 @@ def setup_routes(app):
             message=str(e),
             path=request.path,
             now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            max_bytes=app.config["MAX_CONTENT_LENGTH"],
         ), 404
 
     @app.errorhandler(413)
@@ -295,8 +314,9 @@ def setup_routes(app):
             message="アップロード上限を超えています。",
             path=request.path,
             now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            max_bytes=app.config["MAX_CONTENT_LENGTH"],
         ), 413
-    
+
     @app.errorhandler(403)
     def _h_403(e):
         logger.error(f"403 Forbidden: {request.path}")
@@ -307,6 +327,7 @@ def setup_routes(app):
             message="社外からのダウンロードは許可されていません",
             path=request.path,
             now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            max_bytes=app.config["MAX_CONTENT_LENGTH"],
         ), 403
 
     @app.errorhandler(500)
@@ -319,34 +340,30 @@ def setup_routes(app):
             message=str(e),
             path=request.path,
             now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            max_bytes=app.config["MAX_CONTENT_LENGTH"],
         ), 500
-    
-    # ─── プロキシダウンロード（Blob URL を隠す）─────────────
+
+    # ─── プロキシダウンロード ───
     @app.route("/api/process/<job_id>/download", methods=["GET"])
     def api_download(job_id):
-        """WEB中継方式: Blobから取得してそのままストリーム返却"""
         result_blob = f"processed/{job_id}.docx"
         try:
             blob_client = BlobClient.from_connection_string(
                 os.getenv("AZURE_STORAGE_CONNECTION_STRING"),
                 os.getenv("AZURE_STORAGE_CONTAINER_NAME"),
-                result_blob
+                result_blob,
             )
             if not blob_client.exists():
                 return jsonify({"error": "ファイルが見つかりません"}), 404
 
-            # ストリームで返却（メモリ効率良い）
             download_stream = blob_client.download_blob()
-            
+
             from flask import Response
             return Response(
                 download_stream.chunks(),
                 mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                headers={
-                    "Content-Disposition": f"attachment; filename=gijiroku_{job_id}.docx"
-                }
+                headers={"Content-Disposition": f"attachment; filename=gijiroku_{job_id}.docx"},
             )
         except Exception as e:
             logger.error(f"ダウンロード中にエラー: {e}")
             return jsonify({"error": str(e)}), 500
-

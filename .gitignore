@@ -31,3 +31,6 @@ testvenv/
 # Local dev
 .venv*/
 ping.txt
+
+# local dev secrets
+local.settings.json
