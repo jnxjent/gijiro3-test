@@ -185,6 +185,7 @@ def _guess_ext_from_url(url: str, default: str = ".mp4") -> str:
 logger.info("▶▶ Module import success (ffmpeg resolution will run at invocation)")
 
 
+# ─── Function 本体 ────────────────────────────────────────
 async def main(msg: func.QueueMessage) -> None:
     logger.info("▶▶ Function invoked")
 

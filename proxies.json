@@ -6,14 +6,14 @@
         "methods": [ "GET" ],
         "route": "/api/health"
       },
-      "backendUri": "https://processaudiofunction-gijiro.azurewebsites.net/api/health"
+      "backendUri": "https://processaudiofunction-gijiro-flex.azurewebsites.net/api/health"
     },
     "process-proxy": {
       "matchCondition": {
         "methods": [ "POST" ],
         "route": "/api/process"
       },
-      "backendUri": "https://processaudiofunction-gijiro.azurewebsites.net/api/ProcessAudioFunction"
+      "backendUri": "https://processaudiofunction-gijiro-flex.azurewebsites.net/api/health/api/ProcessAudioFunction"
     }
   }
 }

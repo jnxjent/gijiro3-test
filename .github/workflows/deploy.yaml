@@ -3,7 +3,7 @@ name: Deploy Gijiro3 (Web & Function)
 on:
   push:
     branches:
-      - master
+      - flex-test
 
 jobs:
   webapp:
