@@ -1,3 +1,4 @@
+# kowake.py
 import os
 import sys
 import platform
@@ -8,12 +9,20 @@ import uuid
 import re
 import json
 import asyncio
+import base64
+import logging
+from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse, quote
+
 from dotenv import load_dotenv
 from deepgram import Deepgram
 import openai
+
 from storage import upload_to_blob, download_blob
+
+# ─── ロガー初期化 ─────────────────────────────────────────
+logger = logging.getLogger("ProcessAudioFunction")
 
 # ── app/send_guard.py を確実に読み込むためのパス設定 ─────────────────
 BASE_DIR = os.path.dirname(__file__)
@@ -67,6 +76,12 @@ openai.api_version = "2024-08-01-preview"
 deepgram_client = Deepgram(DEEPGRAM_API_KEY)
 TMP_DIR = tempfile.gettempdir()
 
+# ★ 安全弁：短い語→長い語への「拡張置換」を防ぐ（誤登録吸収）
+#   例: target="フレンドサニタリー" corr="フレンドサニタリータリー" を無効化したい
+DISABLE_EXPANSION_REPLACEMENT = os.getenv("DISABLE_EXPANSION_REPLACEMENT", "1").strip().lower() in (
+    "1", "true", "yes", "on"
+)
+
 # ──────────────────────────────────────────────────────────────
 # 音声 → Deepgram → OpenAI 整形
 # ──────────────────────────────────────────────────────────────
@@ -110,7 +125,8 @@ async def _transcribe_chunk(job_id: str, idx: int, chunk_path: str) -> str:
     uts = resp.get("results", {}).get("utterances", []) or []
     return "\n".join(f"[Speaker {u.get('speaker')}] {u.get('transcript')}" for u in uts)
 
-async def transcribe_and_correct(source: str) -> str:
+
+async def transcribe_and_correct(source: str, email: str | None = None) -> str:
     # 1) URL判定 & ダウンロード
     if source.lower().startswith("http"):
         parsed = urlparse(source)
@@ -170,9 +186,11 @@ async def transcribe_and_correct(source: str) -> str:
     for i in range(0, len(chunk_paths), 6):
         tasks = [_transcribe_chunk(job_id, idx, path) for idx, path in chunk_paths[i: i + 6]]
         results = await asyncio.gather(*tasks)
+
         for text in results:
             if not text:
                 continue  # duplicated / 空は無視
+
             prompt = (
                 "以下の音声書き起こしを自然な日本語にしてください。\n\n"
                 f"{text}\n\n"
@@ -202,99 +220,232 @@ async def transcribe_and_correct(source: str) -> str:
     except Exception:
         pass
 
-    # 置換ステップ追加
-    replaced_text, hit = _apply_keyword_replacements(full)
+    # 置換ステップ（ユーザー別）
+    replaced_text, _hit = _apply_keyword_replacements(full, email=email)
+    
+    # ★ Azure Functions ログに出力
+    logger.info(f"[KEYWORD] replace hit = {_hit}, email={email}")
+    
     return replaced_text
 
-# ─── キーワード管理 / Blob 連携 ────────────────────────────────
-_KEYWORDS_DB: list[dict] = []
-BLOB_JSON_PATH = "settings/keywords.json"
 
-def _apply_keyword_replacements(text: str) -> tuple[str, int]:
+# ─── キーワード管理 / Blob 連携（ユーザー別） ─────────────────────
+LEGACY_BLOB_JSON_PATH = "settings/keywords.json"
+KEYWORDS_BLOB_PREFIX = "settings/keywords/users"
+
+_KEYWORDS_CACHE: dict[str, list[dict]] = {}
+_KEYWORDS_LOADED_AT: dict[str, str] = {}
+
+
+def _safe_email(email: str) -> str:
+    """URL-safe Base64（末尾の=は落とす）"""
+    b = base64.urlsafe_b64encode(email.strip().lower().encode("utf-8")).decode("ascii")
+    return b.rstrip("=")
+
+
+def _keywords_blob_path(email: str | None) -> str:
+    if not email:
+        return LEGACY_BLOB_JSON_PATH
+    return f"{KEYWORDS_BLOB_PREFIX}/{_safe_email(email)}/keywords.json"
+
+
+def _cache_key(email: str | None) -> str:
+    return email.strip().lower() if email else "__legacy__"
+
+
+def _split_targets(reading: str, wrong_examples: str) -> list[str]:
+    tgts: list[str] = []
+    r = (reading or "").strip()
+    if r:
+        tgts.append(r)
+    we = (wrong_examples or "").strip()
+    if we:
+        tgts += [e.strip() for e in re.split(r"[,\uFF0C\u3001]", we) if e.strip()]
+    # 重複除去（順序維持）
+    tgts = [t for t in dict.fromkeys(tgts) if t]
+    return tgts
+
+
+def _apply_keyword_replacements(text: str, email: str | None = None) -> tuple[str, int]:
     """
     テキストに対してキーワード置換を実行し、置換後テキストとヒット数を返します。
+    email が指定された場合は、そのユーザー辞書をロードして適用します。
+
+    ★安全弁:
+      - target == corr は無視
+      - corr が target を含み、かつ corr の方が長い場合（=拡張置換）はデフォルト無効
+      - target は長い順に適用（部分一致で壊れにくい）
     """
+    kwdb = load_keywords_from_file(email)
+    
+    # ★ ログ出力追加
+    logger.info(f"[KEYWORD] loaded {len(kwdb)} keywords for email={email}")
+
     total_hit = 0
-    for kw in _KEYWORDS_DB:
-        corr = kw["keyword"]
-        tgts = [kw["reading"]] + [
-            e.strip() for e in re.split(r"[,\uFF0C\u3001]", kw.get("wrong_examples", "")) if e.strip()
-        ]
-        for t in tgts:
+    for kw in kwdb:
+        corr = (kw.get("keyword", "") or "").strip()
+        if not corr:
+            continue
+
+        reading = kw.get("reading", "")
+        wrong_examples = kw.get("wrong_examples", "")
+
+        targets = _split_targets(reading, wrong_examples)
+
+        # 自己置換は除外
+        targets = [t for t in targets if t and t != corr]
+
+        # ★ 拡張置換を防ぐ（誤登録対策）
+        if DISABLE_EXPANSION_REPLACEMENT:
+            safe_targets = []
+            for t in targets:
+                # corr が t を含む（=t→corr すると長くなる可能性が高い）場合はスキップ
+                if len(corr) > len(t) and (t in corr):
+                    # ただし「誤→正」で corr が短いケースは通るので、
+                    # ここで弾かれるのは「短→長」方向だけ
+                    logger.warning(
+                        f"[KEYWORD] skip expansion replacement: target='{t}' -> corr='{corr}' email={email}"
+                    )
+                    continue
+                safe_targets.append(t)
+            targets = safe_targets
+
+        # 長いターゲットから置換（部分一致の暴発を減らす）
+        targets.sort(key=len, reverse=True)
+
+        for t in targets:
             pat = re.compile(re.escape(t), flags=re.IGNORECASE)
             text, n_hits = pat.subn(corr, text)
+            if n_hits > 0:
+                logger.info(f"[KEYWORD] '{t}' -> '{corr}' : {n_hits} hits")
             total_hit += n_hits
-    print(f"[DEBUG] keyword replace hit = {total_hit}", file=sys.stderr, flush=True)
+
+    logger.info(f"[KEYWORD] total replace hit = {total_hit} email={email}")
     return text, total_hit
 
-# -------------------- CRUD + ログ ---------------------------------
 
-def get_all_keywords():
-    return _KEYWORDS_DB
+# -------------------- CRUD（ユーザー別） + ログ --------------------
 
-def get_keyword_by_id(id):
-    return next((k for k in _KEYWORDS_DB if k["id"] == id), None)
+def get_all_keywords(email: str | None = None):
+    return load_keywords_from_file(email)
 
-def add_keyword(reading, wrong_examples, keyword):
-    before = len(_KEYWORDS_DB)
-    _KEYWORDS_DB.append({
+
+def get_keyword_by_id(id, email: str | None = None):
+    kwdb = load_keywords_from_file(email)
+    return next((k for k in kwdb if k.get("id") == id), None)
+
+
+def add_keyword(reading, wrong_examples, keyword, email: str | None = None):
+    ck = _cache_key(email)
+    kwdb = load_keywords_from_file(email)
+
+    before = len(kwdb)
+    kwdb.append({
         "id": str(uuid.uuid4()),
         "reading": reading,
         "wrong_examples": wrong_examples,
         "keyword": keyword,
     })
-    after = len(_KEYWORDS_DB)
-    print(f"[ADD] keywords {before} → {after}")
-    _save_keywords_to_blob()
+    after = len(kwdb)
 
-def delete_keyword_by_id(id):
-    global _KEYWORDS_DB
-    before = len(_KEYWORDS_DB)
-    _KEYWORDS_DB = [k for k in _KEYWORDS_DB if k["id"] != id]
-    after = len(_KEYWORDS_DB)
-    print(f"[DEL] keywords {before} → {after}")
-    _save_keywords_to_blob()
+    _KEYWORDS_CACHE[ck] = kwdb
+    print(f"[ADD] keywords {before} → {after} email={email}")
+    _save_keywords_to_blob(email)
 
-def update_keyword_by_id(id, reading, wrong_examples, keyword):
-    for k in _KEYWORDS_DB:
-        if k["id"] == id:
+
+def delete_keyword_by_id(id, email: str | None = None):
+    ck = _cache_key(email)
+    kwdb = load_keywords_from_file(email)
+
+    before = len(kwdb)
+    kwdb = [k for k in kwdb if k.get("id") != id]
+    after = len(kwdb)
+
+    _KEYWORDS_CACHE[ck] = kwdb
+    print(f"[DEL] keywords {before} → {after} email={email}")
+    _save_keywords_to_blob(email)
+
+
+def update_keyword_by_id(id, reading, wrong_examples, keyword, email: str | None = None):
+    ck = _cache_key(email)
+    kwdb = load_keywords_from_file(email)
+
+    for k in kwdb:
+        if k.get("id") == id:
             k["reading"] = reading
             k["wrong_examples"] = wrong_examples
             k["keyword"] = keyword
-            print(f"[UPDATE] keyword id={id} を更新しました")
+            print(f"[UPDATE] keyword id={id} を更新しました email={email}")
             break
-    _save_keywords_to_blob()
 
-def load_keywords_from_file():
-    global _KEYWORDS_DB
+    _KEYWORDS_CACHE[ck] = kwdb
+    _save_keywords_to_blob(email)
+
+
+def load_keywords_from_file(email: str | None = None) -> list[dict]:
+    ck = _cache_key(email)
+    if ck in _KEYWORDS_CACHE:
+        return _KEYWORDS_CACHE[ck]
+
+    blob_path = _keywords_blob_path(email)
+
     try:
-        tmp = os.path.join(TMP_DIR, "keywords.json")
+        tmp = os.path.join(TMP_DIR, f"keywords_{_safe_email(email) if email else 'legacy'}.json")
         Path(tmp).parent.mkdir(exist_ok=True, parents=True)
-        try:
-            download_blob(BLOB_JSON_PATH, tmp)
-            print(f"[INFO] Blob からダウンロード完了 → {tmp}")
-        except Exception as e:
-            print(f"[INFO] Blob 取得スキップ: {e}")
 
-        local_json = os.path.abspath("keywords.json")
-        candidate = local_json if os.path.exists(local_json) else tmp
+        downloaded = False
+        try:
+            download_blob(blob_path, tmp)
+            logger.info(f"[KEYWORD] Blob からダウンロード完了 → {tmp} ({blob_path})")
+            downloaded = True
+        except Exception as e:
+            logger.info(f"[KEYWORD] Blob 取得スキップ: {e} ({blob_path})")
+
+        candidate = tmp
+        if not downloaded:
+            local_json = os.path.abspath("keywords.json")
+            if os.path.exists(local_json):
+                candidate = local_json
+
+        if not os.path.exists(candidate) or os.path.getsize(candidate) == 0:
+            logger.warning(f"[KEYWORD] キーワード空/未存在 → 空で開始 ({candidate}) email={email}")
+            _KEYWORDS_CACHE[ck] = []
+            _KEYWORDS_LOADED_AT[ck] = datetime.now().isoformat()
+            return _KEYWORDS_CACHE[ck]
 
         with open(candidate, encoding="utf-8") as f:
-            _KEYWORDS_DB = json.load(f)
+            data = json.load(f)
 
-        print(f"[INFO] キーワード {len(_KEYWORDS_DB)} 件ロード ({candidate})")
-        print("[DEBUG] SAMPLE:", _KEYWORDS_DB[:3])
+        if not isinstance(data, list):
+            logger.warning(f"[KEYWORD] keywords.json の型がlistでない → 空で開始 type={type(data)} email={email}")
+            data = []
+
+        _KEYWORDS_CACHE[ck] = data
+        _KEYWORDS_LOADED_AT[ck] = datetime.now().isoformat()
+        logger.info(f"[KEYWORD] キーワード {len(data)} 件ロード email={email} ({candidate})")
+        logger.info(f"[KEYWORD] SAMPLE: {data[:3]}")
+        return data
+
     except Exception as e:
-        print(f"[WARN] キーワード読込失敗: {e}")
-        _KEYWORDS_DB = []
+        logger.warning(f"[KEYWORD] キーワード読込失敗: {e} email={email} path={blob_path}")
+        _KEYWORDS_CACHE[ck] = []
+        _KEYWORDS_LOADED_AT[ck] = datetime.now().isoformat()
+        return _KEYWORDS_CACHE[ck]
 
-def _save_keywords_to_blob():
+
+def _save_keywords_to_blob(email: str | None = None):
+    ck = _cache_key(email)
+    blob_path = _keywords_blob_path(email)
+    kwdb = _KEYWORDS_CACHE.get(ck, [])
+
     try:
-        tmp = os.path.join(TMP_DIR, "keywords.json")
+        tmp = os.path.join(TMP_DIR, f"keywords_{_safe_email(email) if email else 'legacy'}.json")
         with open(tmp, "w", encoding="utf-8") as f:
-            json.dump(_KEYWORDS_DB, f, ensure_ascii=False, indent=2)
+            json.dump(kwdb, f, ensure_ascii=False, indent=2)
+
         with open(tmp, "rb") as f:
-            upload_to_blob(BLOB_JSON_PATH, f)
-        print("[INFO] キーワード保存完了")
+            upload_to_blob(blob_path, f, add_audio_prefix=False)
+
+        logger.info(f"[KEYWORD] キーワード保存完了 email={email} -> {blob_path}")
     except Exception as e:
-        print(f"[ERROR] キーワード保存失敗: {e}")
+        logger.error(f"[KEYWORD] キーワード保存失敗: {e} email={email} path={blob_path}")

@@ -1,9 +1,0 @@
-{
-  "IsEncrypted": false,
-  "Values": {
-    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=midac19stoyhggrda5qr5ae;AccountKey=djycnwAjqjlj70f1PVgBStfJ8+ZfW04lcE5Laixln7IbhOrM9J0H+KJEjpVbt7NbdgXuI3Fzp3mD+AStMbUyhw==;EndpointSuffix=core.windows.net",
-    "FUNCTIONS_WORKER_RUNTIME": "python",
-    "FFMPEG_BINARY": "C:\\Users\\021213\\ffmpeg\\bin\\win\\ffmpeg.exe",
-    "FFPROBE_BINARY": "C:\\Users\\021213\\ffmpeg\\bin\\win\\ffprobe.exe"
-  }
-}
