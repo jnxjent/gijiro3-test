@@ -1,11 +1,15 @@
 # routes.py
-from flask import request, render_template, jsonify, redirect, send_file, abort
+from __future__ import annotations
+
+from flask import request, render_template, jsonify, redirect, send_file, abort, Response
 import logging
 import os
 import time
 import uuid
 from datetime import datetime
 from pathlib import Path
+import ipaddress
+
 from azure.storage.blob import BlobClient
 
 from storage import generate_upload_sas, enqueue_processing
@@ -19,7 +23,7 @@ from kowake import (
 )
 
 from config import MAX_CONTENT_LENGTH_BYTES
-import ipaddress
+
 
 ALLOWED_DOWNLOAD_IPS = [
     ip.strip()
@@ -48,21 +52,31 @@ def setup_routes(app):
     logging.basicConfig(level=logging.INFO)
     logger.info("✔ setup_routes() 開始")
 
-    # ★★★ ここが今回の本丸：Flask標準キーを必ず設定 ★★★
-    # どこかが app.config['MAX_CONTENT_LENGTH'] を参照しても KeyError にならない
+    # ★★★ Flask標準キーを必ず設定 ★★★
     app.config.setdefault("MAX_CONTENT_LENGTH", int(MAX_CONTENT_LENGTH_BYTES))
 
     # ─────────────────────────────────────────────
     # ★ ユーザー識別（email）
     # ─────────────────────────────────────────────
     def _get_user_email() -> str | None:
-        email = (
-            request.args.get("email")
-            or request.form.get("email")
-            or request.headers.get("X-User-Email")
-            or request.headers.get("X-MS-CLIENT-PRINCIPAL-NAME")
-            or request.headers.get("X-Email")
-        )
+        """
+        EasyAuth を最優先でメール取得。
+        その後 query/form 等のフォールバックを許可。
+        """
+        # 1) EasyAuth のメール（最優先）
+        principal = request.headers.get("X-MS-CLIENT-PRINCIPAL-NAME")
+        if principal:
+            e = (principal or "").strip().lower()
+            return e or None
+
+        # 2) その他ヘッダー
+        hdr = request.headers.get("X-User-Email") or request.headers.get("X-Email")
+        if hdr:
+            e = (hdr or "").strip().lower()
+            return e or None
+
+        # 3) query/form（最後）
+        email = request.args.get("email") or request.form.get("email")
         email = (email or "").strip().lower()
         return email or None
 
@@ -162,7 +176,18 @@ def setup_routes(app):
             logger.error("ジョブ登録エラー: blobUrl または templateBlobUrl が不足")
             return jsonify({"error": "blobUrl and templateBlobUrl are required"}), 400
 
-        email = (data.get("email") or "").strip().lower() or None
+        # ★ 修正本丸：EasyAuthヘッダー → _get_user_email() → JSON(email) の順で解決
+        principal = request.headers.get("X-MS-CLIENT-PRINCIPAL-NAME")
+        email = (
+            (principal or "").strip().lower()
+            or (_get_user_email() or "")
+            or (data.get("email") or "").strip().lower()
+            or None
+        )
+
+        # デバッグ（短く効く）
+        logger.info("[AUTH] principal-name=%s", principal)
+        logger.info("✔ ジョブ登録: job_id will be created, email=%s", email)
 
         job_id = uuid.uuid4().hex
         enqueue_processing(blob_url, template_blob_url, job_id, email=email)
@@ -294,54 +319,66 @@ def setup_routes(app):
     @app.errorhandler(404)
     def _h_404(e):
         logger.error(f"404 Not Found: {request.path}")
-        return render_template(
-            "error.html",
-            title="404 Not Found",
-            code=404,
-            message=str(e),
-            path=request.path,
-            now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            max_bytes=app.config["MAX_CONTENT_LENGTH"],
-        ), 404
+        return (
+            render_template(
+                "error.html",
+                title="404 Not Found",
+                code=404,
+                message=str(e),
+                path=request.path,
+                now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                max_bytes=app.config["MAX_CONTENT_LENGTH"],
+            ),
+            404,
+        )
 
     @app.errorhandler(413)
     def _h_413(e):
         logger.error(f"413 Payload Too Large: {request.path}")
-        return render_template(
-            "error.html",
-            title="413 Payload Too Large",
-            code=413,
-            message="アップロード上限を超えています。",
-            path=request.path,
-            now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            max_bytes=app.config["MAX_CONTENT_LENGTH"],
-        ), 413
+        return (
+            render_template(
+                "error.html",
+                title="413 Payload Too Large",
+                code=413,
+                message="アップロード上限を超えています。",
+                path=request.path,
+                now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                max_bytes=app.config["MAX_CONTENT_LENGTH"],
+            ),
+            413,
+        )
 
     @app.errorhandler(403)
     def _h_403(e):
         logger.error(f"403 Forbidden: {request.path}")
-        return render_template(
-            "error.html",
-            title="403 Forbidden",
-            code=403,
-            message="社外からのダウンロードは許可されていません",
-            path=request.path,
-            now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            max_bytes=app.config["MAX_CONTENT_LENGTH"],
-        ), 403
+        return (
+            render_template(
+                "error.html",
+                title="403 Forbidden",
+                code=403,
+                message="社外からのダウンロードは許可されていません",
+                path=request.path,
+                now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                max_bytes=app.config["MAX_CONTENT_LENGTH"],
+            ),
+            403,
+        )
 
     @app.errorhandler(500)
     def _h_500(e):
         logger.exception("500 Internal Server Error")
-        return render_template(
-            "error.html",
-            title="500 Internal Server Error",
-            code=500,
-            message=str(e),
-            path=request.path,
-            now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            max_bytes=app.config["MAX_CONTENT_LENGTH"],
-        ), 500
+        return (
+            render_template(
+                "error.html",
+                title="500 Internal Server Error",
+                code=500,
+                message=str(e),
+                path=request.path,
+                now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                max_bytes=app.config["MAX_CONTENT_LENGTH"],
+            ),
+            500,
+        )
 
     # ─── プロキシダウンロード ───
     @app.route("/api/process/<job_id>/download", methods=["GET"])
@@ -357,8 +394,6 @@ def setup_routes(app):
                 return jsonify({"error": "ファイルが見つかりません"}), 404
 
             download_stream = blob_client.download_blob()
-
-            from flask import Response
             return Response(
                 download_stream.chunks(),
                 mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document",

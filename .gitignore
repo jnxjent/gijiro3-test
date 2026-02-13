@@ -1,0 +1,7 @@
+
+# local secrets / venv / pycache
+.env
+local.settings.json
+.venv/
+__pycache__/
+**/__pycache__/
