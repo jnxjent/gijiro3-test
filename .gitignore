@@ -1,33 +1,38 @@
-# 仮想環境除外
-antenv/
-.venv/
-
-# FFmpegバイナリ除外
-ffmpeg/
-
-# 出力ファイル除外
-output.tar.gz
-
-# その他
+# =========================
+# Python
+# =========================
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.log
 
-# Ignore ffmpeg binaries
-gijiro2/ffmpeg/
+# =========================
+# Virtual Environment
+# =========================
+.venv/
+venv/
+antenv/
 
-# 一時オーディオファイル
-temp_audio.*
-ffmpeg/
-ffmpeg/
-**/ffmpeg*
-**/ffprobe*
-myenv/
-testvenv/
+# =========================
+# Local secrets / settings
+# =========================
 .env
+local.settings.json
+prod_settings.*
+test_settings.*
 
-# Local dev
-.venv*/
-ping.txt
+# =========================
+# Build / output
+# =========================
+output.tar.gz
+
+# =========================
+# Binaries
+# =========================
+ffmpeg/
+
+# =========================
+# OS / Editor
+# =========================
+.DS_Store
+.vscode/
