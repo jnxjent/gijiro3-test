@@ -168,14 +168,7 @@ def generate_upload_sas(blob_name: str, expiry_hours: int = 1) -> dict:
     url = generate_blob_url(blob_name)
     return {"uploadUrl": f"{url}?{sas_token}", "blobUrl": url}
 
-
-def enqueue_processing(
-    blob_url: str,
-    template_blob_url: str,
-    job_id: str,
-    *,
-    email: str | None = None,
-) -> None:
+def enqueue_processing(blob_url: str, template_blob_url: str, job_id: str, email: str | None = None) -> None:
     """
     明示的に audio-processing キューへメッセージを送信。
     - メッセージは JSON テキストで送信
@@ -200,10 +193,10 @@ def enqueue_processing(
             payload_obj["email"] = email.strip().lower()
 
         payload = json.dumps(payload_obj, ensure_ascii=False)
-
         queue_client.send_message(payload)
         logger.info(f"Enqueued job {job_id} to '{QUEUE_NAME}' email={email}")
 
     except HttpResponseError as e:
         logger.error(f"Failed to enqueue job {job_id}: {e}", exc_info=True)
         raise
+
