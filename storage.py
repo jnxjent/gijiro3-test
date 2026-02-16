@@ -131,6 +131,7 @@ def enqueue_processing(blob_url: str, template_blob_url: str, job_id: str, email
             "job_id": job_id,
             "blob_url": blob_url,
             "template_blob_url": template_blob_url,
+            "email": email,  # ★ この行を追加
         })
         queue_client.send_message(payload)
         logger.info(f"Enqueued job {job_id} to '{QUEUE_NAME}'")
