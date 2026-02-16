@@ -40,6 +40,7 @@ container_client = None
 queue_service: Optional[QueueServiceClient] = None
 queue_client = None
 
+
 def _ensure_clients() -> None:
     """
     必要な環境変数が揃っているかチェックして、クライアントを初期化する。
@@ -168,6 +169,7 @@ def generate_upload_sas(blob_name: str, expiry_hours: int = 1) -> dict:
     url = generate_blob_url(blob_name)
     return {"uploadUrl": f"{url}?{sas_token}", "blobUrl": url}
 
+
 def enqueue_processing(blob_url: str, template_blob_url: str, job_id: str, email: str | None = None) -> None:
     """
     明示的に audio-processing キューへメッセージを送信。
@@ -199,4 +201,3 @@ def enqueue_processing(blob_url: str, template_blob_url: str, job_id: str, email
     except HttpResponseError as e:
         logger.error(f"Failed to enqueue job {job_id}: {e}", exc_info=True)
         raise
-
