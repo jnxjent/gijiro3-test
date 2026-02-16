@@ -5,17 +5,19 @@ from pathlib import Path
 from table_writer import table_writer
 from minutes_writer import write_minutes_section
 
-def process_document(word_file_path: str, output_file_path: str, extracted_info: dict):
+def process_document(word_file_path: str, output_file_path: str, extracted_info: dict, email: str = None):
     """
     統合関数: テーブルの更新と議事録の書き込みを処理する
 
     :param word_file_path: 読み込む Word テンプレートのファイルパス
     :param output_file_path: 出力先（更新後の Word ファイルのパス）
     :param extracted_info: 生成AIが抽出した辞書データ {label: value, replaced_transcription: "..."}
+    :param email: ユーザーメール（個人キーワード辞書用）
     """
     print(f"[INFO] Wordテンプレート: {word_file_path}")
     print(f"[INFO] 出力ファイル: {output_file_path}")
     print(f"[INFO] 抽出情報: {len(extracted_info)} 個")
+    print(f"[INFO] email: {email}")
 
     # --- 追加デバッグ: extracted_info のキーと値のサイズ/タイプを可視化
     debug_map = {}
@@ -49,10 +51,10 @@ def process_document(word_file_path: str, output_file_path: str, extracted_info:
         print("[WARNING] 本文文字列が空です。抽出キー名や前段の結合処理を確認してください。")
 
     # ── キーワード置換の追加 ────────────────────────────────────
-    load_keywords_from_file()  # 最新定義をロード
-    replaced_transcription, hit = _apply_keyword_replacements(replaced_transcription)
+    load_keywords_from_file(email)  # 最新定義をロード（個人辞書対応）
+    replaced_transcription, hit = _apply_keyword_replacements(replaced_transcription, email=email)
     # 標準エラーに出力してログストリームに残す
-    print(f"[DEBUG] keyword replace hit = {hit}", file=sys.stderr, flush=True)
+    print(f"[DEBUG] keyword replace hit = {hit}, email={email}", file=sys.stderr, flush=True)
     # ─────────────────────────────────────────────────────────
 
     try:

@@ -79,7 +79,6 @@ def _pick_first_existing(paths: list[str]) -> str:
 
 def _candidate_paths_from_env() -> tuple[list[str], list[str]]:
     """環境変数→既知配置の順で候補を並べる"""
-    # App Settings / 環境変数の両方を見に行く（空は無視）
     env_ff = os.environ.get("FFMPEG_BINARY") or os.environ.get("FFMPEG_PATH") or ""
     env_fp = os.environ.get("FFPROBE_BINARY") or os.environ.get("FFPROBE_PATH") or ""
 
@@ -97,7 +96,7 @@ def _candidate_paths_from_env() -> tuple[list[str], list[str]]:
         "/home/site/ffmpeg-bin/bin/ffprobe",
         "/home/site/wwwroot/ffprobe",
     ]
-    # 空文字と重複を除去
+
     ffmpeg_candidates = [p for p in dict.fromkeys(ffmpeg_candidates) if p]
     ffprobe_candidates = [p for p in dict.fromkeys(ffprobe_candidates) if p]
     return ffmpeg_candidates, ffprobe_candidates
@@ -106,11 +105,6 @@ def _candidate_paths_from_env() -> tuple[list[str], list[str]]:
 def resolve_ffmpeg_and_ffprobe() -> tuple[str, str]:
     """
     実行時に ffmpeg/ffprobe を解決。
-    - 候補から source を見つける
-    - 直接実行できるならそれを使う
-    - できなければ /tmp に実体コピーしてそこを使う
-    - 最後に `-version` で実行確認
-    - PATH / pydub / 環境変数 (BINARY/ PATH) をすべて /tmp 実体に統一
     """
     ff_candidates, fp_candidates = _candidate_paths_from_env()
     logger.info(f"[ffmpeg-check] candidates ffmpeg={ff_candidates}")
@@ -126,7 +120,6 @@ def resolve_ffmpeg_and_ffprobe() -> tuple[str, str]:
         logger.error("FFPROBE binary not found in candidates.")
         raise RuntimeError("FFPROBE binary not found.")
 
-    # まずは source を直接実行してみる（noexec の早期検出）
     if _exec_succeeds(ff_src) and _exec_succeeds(fp_src):
         ff_bin, fp_bin = ff_src, fp_src
         logger.info("[ffmpeg-check] direct execute OK")
@@ -138,20 +131,17 @@ def resolve_ffmpeg_and_ffprobe() -> tuple[str, str]:
             logger.error("[ffmpeg-check] /tmp fallback also failed to execute")
             raise RuntimeError("ffmpeg/ffprobe not executable even after /tmp fallback")
 
-    # pydub / 環境変数を更新（/tmp 実体で統一）
     os.environ["FFMPEG_BINARY"] = ff_bin
     os.environ["FFPROBE_BINARY"] = fp_bin
-    os.environ["FFMPEG_PATH"] = ff_bin          # ← kowake が最優先で参照
-    os.environ["FFPROBE_PATH"] = fp_bin         # ← kowake が最優先で参照
+    os.environ["FFMPEG_PATH"] = ff_bin
+    os.environ["FFPROBE_PATH"] = fp_bin
 
     AudioSegment.converter = ff_bin
     AudioSegment.ffprobe = fp_bin
 
-    # PATH 先頭に追加
     bin_dir = str(Path(ff_bin).parent)
     os.environ["PATH"] = bin_dir + os.pathsep + os.environ.get("PATH", "")
 
-    # 版表示（デバッグ）
     try:
         out = subprocess.check_output([ff_bin, "-version"], stderr=subprocess.STDOUT, timeout=5).decode("utf-8", "ignore").splitlines()[0]
         logger.info(f"[ffmpeg-check] ffmpeg -version: {out}")
@@ -164,6 +154,7 @@ def resolve_ffmpeg_and_ffprobe() -> tuple[str, str]:
 
 
 logger.info("▶▶ Module import success (ffmpeg resolution will run at invocation)")
+
 
 # ─── Function 本体 ────────────────────────────────────────
 async def main(msg: func.QueueMessage) -> None:
@@ -182,6 +173,11 @@ async def main(msg: func.QueueMessage) -> None:
     raw = msg.get_body().decode("utf-8", errors="replace")
     logger.info("▶▶ RAW payload: %s", raw)
 
+    local_audio = None
+    fixed_audio = None
+    template_path = None
+    local_docx = None
+
     try:
         # JSON / Base64 自動判定
         try:
@@ -193,7 +189,11 @@ async def main(msg: func.QueueMessage) -> None:
         job_id            = body["job_id"]
         blob_url          = body["blob_url"]
         template_blob_url = body["template_blob_url"]
-        logger.info(f"Received job {job_id}, blob: {blob_url}, template: {template_blob_url}")
+
+        # ★ email を必ず拾う（2回目キャッチ含む）
+        email = (body.get("email") or body.get("user_email") or body.get("mail") or "").strip()
+
+        logger.info(f"Received job {job_id}, blob: {blob_url}, template: {template_blob_url}, email={email}")
 
         # 1. 音声を /tmp にダウンロード
         local_audio = os.path.join(TMP_DIR, f"{uuid.uuid4()}.mp4")
@@ -231,9 +231,13 @@ async def main(msg: func.QueueMessage) -> None:
         # 5. 情報抽出 → Word
         logger.info("▶▶ STEP5-1: Starting document processing")
         meeting_info = await extract_meeting_info_and_speakers(transcript, template_path)
+
         local_docx = os.path.join(TMP_DIR, f"{job_id}.docx")
         blob_docx  = f"processed/{job_id}.docx"
-        process_document(template_path, local_docx, meeting_info)
+
+        # ★ ここが今回の修正の肝：docwriter へ email を伝播
+        process_document(template_path, local_docx, meeting_info, email=email)
+
         logger.info("▶▶ STEP5-2: Document processed")
 
         with open(local_docx, "rb") as fp:
@@ -246,8 +250,7 @@ async def main(msg: func.QueueMessage) -> None:
 
     finally:
         # 後片付け
-        for var in ("local_audio", "fixed_audio", "template_path", "local_docx"):
-            path = locals().get(var)
+        for path in (local_audio, fixed_audio, template_path, local_docx):
             if path and os.path.exists(path):
                 try:
                     os.remove(path)
