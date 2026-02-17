@@ -1,5 +1,4 @@
-# __init__.py (ProcessAudioFunction)
-
+#__init__.py
 import logging
 
 # ─── ロガー初期化 ─────────────────────────────────────────
@@ -92,12 +91,21 @@ def _candidate_paths_from_env() -> tuple[list[str], list[str]]:
         "/home/site/ffmpeg-bin/bin/ffprobe",
         "/home/site/wwwroot/ffprobe",
     ]
+    # 空文字と重複を除去
     ffmpeg_candidates = [p for p in dict.fromkeys(ffmpeg_candidates) if p]
     ffprobe_candidates = [p for p in dict.fromkeys(ffprobe_candidates) if p]
     return ffmpeg_candidates, ffprobe_candidates
 
 
 def resolve_ffmpeg_and_ffprobe() -> tuple[str, str]:
+    """
+    実行時に ffmpeg/ffprobe を解決。
+    - 候補から source を見つける
+    - 直接実行できるならそれを使う
+    - できなければ /tmp に実体コピーしてそこを使う
+    - 最後に `-version` で実行確認
+    - PATH / pydub / 環境変数 (BINARY/ PATH) をすべて /tmp 実体に統一
+    """
     ff_candidates, fp_candidates = _candidate_paths_from_env()
     logger.info(f"[ffmpeg-check] candidates ffmpeg={ff_candidates}")
     logger.info(f"[ffmpeg-check] candidates ffprobe={fp_candidates}")
@@ -205,18 +213,18 @@ async def main(msg: func.QueueMessage) -> None:
     template_path = None
     local_docx = None
 
+    local_audio = None
+    fixed_audio = None
+    template_path = None
+    local_docx = None
+
     try:
         body = _maybe_base64_to_json(raw)
 
         job_id = body["job_id"]
         blob_url = body["blob_url"]
         template_blob_url = body["template_blob_url"]
-
-        email = (body.get("email") or "").strip().lower() or None
-
-        logger.info(
-            f"Received job {job_id}, blob: {blob_url}, template: {template_blob_url}, email={email}"
-        )
+        logger.info(f"Received job {job_id}, blob: {blob_url}, template: {template_blob_url}")
 
         ext = _guess_ext_from_url(blob_url, default=".mp4")
         local_audio = os.path.join(TMP_DIR, f"{uuid.uuid4()}{ext}")
@@ -245,9 +253,8 @@ async def main(msg: func.QueueMessage) -> None:
         meeting_info = await extract_meeting_info_and_speakers(transcript, template_path)
 
         local_docx = os.path.join(TMP_DIR, f"{job_id}.docx")
-        blob_docx = f"processed/{job_id}.docx"
-
-        process_document(template_path, local_docx, meeting_info, email=email)
+        blob_docx  = f"processed/{job_id}.docx"
+        process_document(template_path, local_docx, meeting_info)
         logger.info("▶▶ STEP5-2: Document processed")
 
         with open(local_docx, "rb") as fp:
@@ -260,7 +267,9 @@ async def main(msg: func.QueueMessage) -> None:
         raise
 
     finally:
-        for path in (local_audio, fixed_audio, template_path, local_docx):
+        # 後片付け
+        for var in ("local_audio", "fixed_audio", "template_path", "local_docx"):
+            path = locals().get(var)
             if path and os.path.exists(path):
                 try:
                     os.remove(path)

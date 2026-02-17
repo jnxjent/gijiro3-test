@@ -1,7 +1,25 @@
-
-# local secrets / venv / pycache
-.env
-local.settings.json
-.venv/
+# =========================
+# Python
+# =========================
 __pycache__/
-**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Ignore ffmpeg binaries
+gijiro2/ffmpeg/
+
+# 一時オーディオファイル
+temp_audio.*
+ffmpeg/
+ffmpeg/
+**/ffmpeg*
+**/ffprobe*
+myenv/
+testvenv/
+.env
+
+# Local dev
+.venv*/
+ping.txt
