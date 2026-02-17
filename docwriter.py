@@ -1,3 +1,4 @@
+#docwriter.py
 import os
 import sys
 from kowake import load_keywords_from_file, _apply_keyword_replacements

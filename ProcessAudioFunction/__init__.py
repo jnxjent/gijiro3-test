@@ -1,3 +1,4 @@
+#__init__.py
 import logging
 
 # ─── ロガー初期化 ─────────────────────────────────────────
@@ -219,7 +220,7 @@ async def main(msg: func.QueueMessage) -> None:
 
         # 3. 文字起こし
         logger.info("▶▶ STEP3-1: Starting transcription")
-        transcript = await transcribe_and_correct(fixed_audio)
+        transcript = await transcribe_and_correct(fixed_audio, email=email)
         logger.info("▶▶ STEP3-2: Transcription completed")
 
         # 4. テンプレート DL
