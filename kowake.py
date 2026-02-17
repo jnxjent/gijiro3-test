@@ -9,13 +9,13 @@ import uuid
 import re
 import json
 import asyncio
-import base64
-import logging
 from pathlib import Path
 from urllib.parse import urlparse, quote
+
 from dotenv import load_dotenv
 from deepgram import Deepgram
 import openai
+
 from storage import upload_to_blob, download_blob
 
 # ── ロガー設定 ─────────────────────────────────────────
@@ -72,6 +72,12 @@ openai.api_version = "2024-08-01-preview"
 
 deepgram_client = Deepgram(DEEPGRAM_API_KEY)
 TMP_DIR = tempfile.gettempdir()
+
+# ★ 安全弁：短い語→長い語への「拡張置換」を防ぐ（誤登録吸収）
+#   例: target="フレンドサニ" corr="フレンドサニタリー" を誤って「短→長」にしてしまった時に暴発しやすい
+DISABLE_EXPANSION_REPLACEMENT = os.getenv("DISABLE_EXPANSION_REPLACEMENT", "1").strip().lower() in (
+    "1", "true", "yes", "on"
+)
 
 # ──────────────────────────────────────────────────────────────
 # 音声 → Deepgram → OpenAI 整形
@@ -160,7 +166,7 @@ async def transcribe_and_correct(source: str, email: str | None = None) -> str:
     step = chunk_len - overlap
 
     # 4) ffmpeg でチャンク分割
-    chunk_paths = []
+    chunk_paths: list[tuple[int, str]] = []
     start = 0.0
     idx = 0
     while start < duration:
@@ -174,13 +180,15 @@ async def transcribe_and_correct(source: str, email: str | None = None) -> str:
         start += step
 
     # 5) 並列送信 → 整形AI
-    corrected = []
+    corrected: list[str] = []
     for i in range(0, len(chunk_paths), 6):
-        tasks = [_transcribe_chunk(job_id, idx, path) for idx, path in chunk_paths[i: i + 6]]
+        tasks = [_transcribe_chunk(job_id, cidx, path) for cidx, path in chunk_paths[i: i + 6]]
         results = await asyncio.gather(*tasks)
+
         for text in results:
             if not text:
                 continue  # duplicated / 空は無視
+
             prompt = (
                 "以下の音声書き起こしを自然な日本語にしてください。\n\n"
                 f"{text}\n\n"
@@ -210,176 +218,100 @@ async def transcribe_and_correct(source: str, email: str | None = None) -> str:
     except Exception:
         pass
 
-    # ★ 置換ステップ（email対応）
-    replaced_text, hit = _apply_keyword_replacements(full, email=email)
-    logger.info(f"[KEYWORD] replace hit = {hit}, email={email}")
+    # 置換ステップ追加
+    replaced_text, hit = _apply_keyword_replacements(full)
     return replaced_text
 
+# ─── キーワード管理 / Blob 連携 ────────────────────────────────
+_KEYWORDS_DB: list[dict] = []
+BLOB_JSON_PATH = "settings/keywords.json"
 
-# ─── キーワード管理 / Blob 連携（個人別対応版） ────────────────────────────────
-_KEYWORDS_DB: list[dict] = []  # Flask用（後方互換）
-_KEYWORDS_CACHE: dict[str, list[dict]] = {}  # ユーザー別キャッシュ（Function用）
-
-BLOB_JSON_PATH = "settings/keywords.json"  # 共通辞書（後方互換）
-
-
-def _keywords_blob_path(email: str | None) -> str:
-    """email に応じたキーワード辞書の Blob パスを返す"""
-    if not email:
-        return BLOB_JSON_PATH  # 共通辞書
-    encoded = base64.urlsafe_b64encode(email.encode()).decode().rstrip("=")
-    return f"settings/keywords/users/{encoded}/keywords.json"
-
-
-def _keywords_local_path(email: str | None) -> str:
-    """email に応じたローカルキャッシュパスを返す"""
-    if not email:
-        return os.path.join(TMP_DIR, "keywords_legacy.json")
-    encoded = base64.urlsafe_b64encode(email.encode()).decode().rstrip("=")
-    return os.path.join(TMP_DIR, f"keywords_{encoded}.json")
-
-
-def _apply_keyword_replacements(text: str, email: str | None = None) -> tuple[str, int]:
+def _apply_keyword_replacements(text: str) -> tuple[str, int]:
     """
     テキストに対してキーワード置換を実行し、置換後テキストとヒット数を返します。
-    email が指定されていれば個人辞書を使用。
     """
-    # キーワードをロード（キャッシュがあれば使用）
-    cache_key = email or "__legacy__"
-    if cache_key not in _KEYWORDS_CACHE:
-        load_keywords_from_file(email)
-    
-    keywords = _KEYWORDS_CACHE.get(cache_key, [])
-    logger.info(f"[KEYWORD] loaded {len(keywords)} keywords for email={email}")
-
     total_hit = 0
-    for kw in keywords:
-        corr = kw.get("keyword", "")
-        tgts = [kw.get("reading", "")] + [
+    for kw in _KEYWORDS_DB:
+        corr = kw["keyword"]
+        tgts = [kw["reading"]] + [
             e.strip() for e in re.split(r"[,\uFF0C\u3001]", kw.get("wrong_examples", "")) if e.strip()
         ]
         for t in tgts:
-            if not t:
-                continue
             pat = re.compile(re.escape(t), flags=re.IGNORECASE)
             text, n_hits = pat.subn(corr, text)
-            if n_hits > 0:
-                logger.info(f"[KEYWORD] '{t}' → '{corr}' : {n_hits} hits")
             total_hit += n_hits
 
     logger.info(f"[KEYWORD] total replace hit = {total_hit} email={email}")
     return text, total_hit
 
+# -------------------- CRUD + ログ ---------------------------------
 
-# -------------------- CRUD + ログ（後方互換） ---------------------------------
+def get_all_keywords():
+    return _KEYWORDS_DB
 
-def get_all_keywords(email: str | None = None) -> list[dict]:
-    """キーワード一覧を取得（email対応）"""
-    cache_key = email or "__legacy__"
-    if cache_key not in _KEYWORDS_CACHE:
-        load_keywords_from_file(email)
-    return _KEYWORDS_CACHE.get(cache_key, [])
+def get_keyword_by_id(id):
+    return next((k for k in _KEYWORDS_DB if k["id"] == id), None)
 
-
-def get_keyword_by_id(id: str, email: str | None = None) -> dict | None:
-    keywords = get_all_keywords(email)
-    return next((k for k in keywords if k["id"] == id), None)
-
-
-def add_keyword(reading: str, wrong_examples: str, keyword: str, email: str | None = None) -> None:
-    keywords = get_all_keywords(email)
-    before = len(keywords)
-    keywords.append({
+def add_keyword(reading, wrong_examples, keyword):
+    before = len(_KEYWORDS_DB)
+    _KEYWORDS_DB.append({
         "id": str(uuid.uuid4()),
         "reading": reading,
         "wrong_examples": wrong_examples,
         "keyword": keyword,
     })
-    cache_key = email or "__legacy__"
-    _KEYWORDS_CACHE[cache_key] = keywords
-    after = len(keywords)
-    print(f"[ADD] keywords {before} → {after} email={email}")
-    _save_keywords_to_blob(email)
+    after = len(_KEYWORDS_DB)
+    print(f"[ADD] keywords {before} → {after}")
+    _save_keywords_to_blob()
 
+def delete_keyword_by_id(id):
+    global _KEYWORDS_DB
+    before = len(_KEYWORDS_DB)
+    _KEYWORDS_DB = [k for k in _KEYWORDS_DB if k["id"] != id]
+    after = len(_KEYWORDS_DB)
+    print(f"[DEL] keywords {before} → {after}")
+    _save_keywords_to_blob()
 
-def delete_keyword_by_id(id: str, email: str | None = None) -> None:
-    keywords = get_all_keywords(email)
-    before = len(keywords)
-    keywords = [k for k in keywords if k["id"] != id]
-    cache_key = email or "__legacy__"
-    _KEYWORDS_CACHE[cache_key] = keywords
-    after = len(keywords)
-    print(f"[DEL] keywords {before} → {after} email={email}")
-    _save_keywords_to_blob(email)
-
-
-def update_keyword_by_id(id: str, reading: str, wrong_examples: str, keyword: str, email: str | None = None) -> None:
-    keywords = get_all_keywords(email)
-    for k in keywords:
+def update_keyword_by_id(id, reading, wrong_examples, keyword):
+    for k in _KEYWORDS_DB:
         if k["id"] == id:
             k["reading"] = reading
             k["wrong_examples"] = wrong_examples
             k["keyword"] = keyword
-            print(f"[UPDATE] keyword id={id} を更新しました email={email}")
+            print(f"[UPDATE] keyword id={id} を更新しました")
             break
-    cache_key = email or "__legacy__"
-    _KEYWORDS_CACHE[cache_key] = keywords
-    _save_keywords_to_blob(email)
+    _save_keywords_to_blob()
 
-
-def load_keywords_from_file(email: str | None = None) -> None:
-    """Blob からキーワード辞書をロード（email対応）"""
+def load_keywords_from_file():
     global _KEYWORDS_DB
-    cache_key = email or "__legacy__"
-    
-    blob_path = _keywords_blob_path(email)
-    local_path = _keywords_local_path(email)
-    
     try:
-        Path(local_path).parent.mkdir(exist_ok=True, parents=True)
+        tmp = os.path.join(TMP_DIR, "keywords.json")
+        Path(tmp).parent.mkdir(exist_ok=True, parents=True)
         try:
-            download_blob(blob_path, local_path)
-            logger.info(f"[KEYWORD] Blob からダウンロード完了 → {local_path} ({blob_path})")
+            download_blob(BLOB_JSON_PATH, tmp)
+            print(f"[INFO] Blob からダウンロード完了 → {tmp}")
         except Exception as e:
-            logger.info(f"[KEYWORD] Blob 取得スキップ: {e} ({blob_path})")
+            print(f"[INFO] Blob 取得スキップ: {e}")
 
-        if os.path.exists(local_path):
-            with open(local_path, encoding="utf-8") as f:
-                keywords = json.load(f)
-        else:
-            logger.warning(f"[KEYWORD] キーワード空/未存在 → 空で開始 ({local_path}) email={email}")
-            keywords = []
+        local_json = os.path.abspath("keywords.json")
+        candidate = local_json if os.path.exists(local_json) else tmp
 
-        _KEYWORDS_CACHE[cache_key] = keywords
-        
-        # 後方互換: email=None の場合は _KEYWORDS_DB も更新
-        if not email:
-            _KEYWORDS_DB = keywords
+        with open(candidate, encoding="utf-8") as f:
+            _KEYWORDS_DB = json.load(f)
 
-        logger.info(f"[KEYWORD] キーワード {len(keywords)} 件ロード email={email} ({local_path})")
-        if keywords:
-            logger.info(f"[KEYWORD] SAMPLE: {keywords[:2]}")
-
+        print(f"[INFO] キーワード {len(_KEYWORDS_DB)} 件ロード ({candidate})")
+        print("[DEBUG] SAMPLE:", _KEYWORDS_DB[:3])
     except Exception as e:
-        logger.warning(f"[KEYWORD] キーワード読込失敗: {e} email={email}")
-        _KEYWORDS_CACHE[cache_key] = []
-        if not email:
-            _KEYWORDS_DB = []
+        print(f"[WARN] キーワード読込失敗: {e}")
+        _KEYWORDS_DB = []
 
-
-def _save_keywords_to_blob(email: str | None = None) -> None:
-    """キーワード辞書を Blob に保存（email対応）"""
-    cache_key = email or "__legacy__"
-    keywords = _KEYWORDS_CACHE.get(cache_key, [])
-    
-    blob_path = _keywords_blob_path(email)
-    local_path = _keywords_local_path(email)
-    
+def _save_keywords_to_blob():
     try:
-        with open(local_path, "w", encoding="utf-8") as f:
-            json.dump(keywords, f, ensure_ascii=False, indent=2)
-        with open(local_path, "rb") as f:
-            upload_to_blob(blob_path, f, add_audio_prefix=False)
-        logger.info(f"[KEYWORD] キーワード保存完了 → {blob_path} email={email}")
+        tmp = os.path.join(TMP_DIR, "keywords.json")
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(_KEYWORDS_DB, f, ensure_ascii=False, indent=2)
+        with open(tmp, "rb") as f:
+            upload_to_blob(BLOB_JSON_PATH, f)
+        print("[INFO] キーワード保存完了")
     except Exception as e:
-        logger.error(f"[KEYWORD] キーワード保存失敗: {e} email={email}")
+        print(f"[ERROR] キーワード保存失敗: {e}")

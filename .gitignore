@@ -5,34 +5,21 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.log
 
-# =========================
-# Virtual Environment
-# =========================
-.venv/
-venv/
-antenv/
+# Ignore ffmpeg binaries
+gijiro2/ffmpeg/
 
-# =========================
-# Local secrets / settings
-# =========================
-.env
-local.settings.json
-prod_settings.*
-test_settings.*
-
-# =========================
-# Build / output
-# =========================
-output.tar.gz
-
-# =========================
-# Binaries
-# =========================
+# 一時オーディオファイル
+temp_audio.*
 ffmpeg/
+ffmpeg/
+**/ffmpeg*
+**/ffprobe*
+myenv/
+testvenv/
+.env
 
-# =========================
-# OS / Editor
-# =========================
-.DS_Store
-.vscode/
+# Local dev
+.venv*/
+ping.txt

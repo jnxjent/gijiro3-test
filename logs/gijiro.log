@@ -1,0 +1,1258 @@
+[2025-11-04 15:01:09,086] INFO app :: ✔ routes.py を読み込みます
+[2025-11-04 15:01:10,020] INFO app :: ✔ setup_routes 実行完了
+[2025-11-04 15:01:10,020] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2025-11-04 15:04:35,795] INFO app :: ✔ routes.py を読み込みます
+[2025-11-04 15:04:36,658] INFO app :: ✔ setup_routes 実行完了
+[2025-11-04 15:04:36,658] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2025-11-04 15:04:36,658] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2025-11-04 15:04:36,658] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2025-11-04 15:04:36,662] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=104857600
+[2025-11-04 15:04:36,708] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2025-11-04 15:04:52,997] INFO app :: [f5673f90] ⇢ GET /
+[2025-11-04 15:04:53,006] INFO app :: [f5673f90] ⇠ 200 GET / (0.009s)
+[2025-11-04 15:04:53,087] INFO app :: [539f338b] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2025-11-04 15:04:53,181] INFO app :: [539f338b] ⇠ 200 GET /static/images/gijiro-logo-professional.svg (0.095s)
+[2025-11-04 15:04:53,236] INFO app :: [210a523c] ⇢ GET /favicon.ico
+[2025-11-04 15:04:53,248] INFO app :: [210a523c] ⇠ 404 GET /favicon.ico (0.012s)
+[2025-11-04 15:05:30,322] INFO app :: [f99a10f9] ⇢ GET /api/blob/sas
+[2025-11-04 15:05:30,322] INFO app :: [f99a10f9] ⇠ 200 GET /api/blob/sas (0.000s)
+[2025-11-04 15:05:32,261] INFO app :: [ae61f6fd] ⇢ GET /api/blob/sas
+[2025-11-04 15:05:32,262] INFO app :: [ae61f6fd] ⇠ 200 GET /api/blob/sas (0.001s)
+[2025-11-04 15:05:32,516] INFO app :: [b289f490] ⇢ POST /api/process
+[2025-11-04 15:05:34,747] INFO app :: [b289f490] ⇠ 202 POST /api/process (2.231s)
+[2025-11-04 15:05:38,567] INFO app :: [5e2266b6] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:05:40,895] INFO app :: [5e2266b6] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (2.328s)
+[2025-11-04 15:05:41,576] INFO app :: [16e13710] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:05:42,913] INFO app :: [16e13710] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.337s)
+[2025-11-04 15:05:44,575] INFO app :: [8dc30d92] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:05:47,277] INFO app :: [8dc30d92] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (2.702s)
+[2025-11-04 15:05:47,565] INFO app :: [2d8f354d] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:05:48,815] INFO app :: [2d8f354d] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.250s)
+[2025-11-04 15:05:50,585] INFO app :: [e78e84ab] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:05:52,298] INFO app :: [e78e84ab] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.712s)
+[2025-11-04 15:05:53,569] INFO app :: [8481c93e] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:05:55,668] INFO app :: [8481c93e] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (2.099s)
+[2025-11-04 15:05:56,569] INFO app :: [c5b5c8ea] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:05:57,903] INFO app :: [c5b5c8ea] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.334s)
+[2025-11-04 15:05:59,574] INFO app :: [653ef507] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:00,915] INFO app :: [653ef507] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.341s)
+[2025-11-04 15:06:02,578] INFO app :: [2a061de9] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:03,946] INFO app :: [2a061de9] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.368s)
+[2025-11-04 15:06:05,568] INFO app :: [0e44a2da] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:06,919] INFO app :: [0e44a2da] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.351s)
+[2025-11-04 15:06:08,574] INFO app :: [17194e57] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:09,903] INFO app :: [17194e57] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.329s)
+[2025-11-04 15:06:11,588] INFO app :: [16db4b87] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:12,853] INFO app :: [16db4b87] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.265s)
+[2025-11-04 15:06:14,462] INFO app :: [7fc89263] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:15,829] INFO app :: [7fc89263] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.367s)
+[2025-11-04 15:06:16,754] INFO app :: [694ccd7f] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:18,157] INFO app :: [694ccd7f] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.403s)
+[2025-11-04 15:06:20,566] INFO app :: [5a18d183] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:21,998] INFO app :: [5a18d183] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.432s)
+[2025-11-04 15:06:23,566] INFO app :: [292df0c0] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:24,984] INFO app :: [292df0c0] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.418s)
+[2025-11-04 15:06:26,576] INFO app :: [098a2636] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:27,945] INFO app :: [098a2636] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.368s)
+[2025-11-04 15:06:29,573] INFO app :: [73ec6dc9] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:31,258] INFO app :: [73ec6dc9] ⇠ 202 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.685s)
+[2025-11-04 15:06:32,570] INFO app :: [556413ba] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:33,949] INFO app :: [556413ba] ⇠ 200 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.379s)
+[2025-11-04 15:06:33,961] INFO app :: [f394f01d] ⇢ GET /results/f6c56fe619544a0f8f2d82ebd5e42040
+[2025-11-04 15:06:33,977] INFO app :: [f394f01d] ⇠ 200 GET /results/f6c56fe619544a0f8f2d82ebd5e42040 (0.016s)
+[2025-11-04 15:06:34,008] INFO app :: [67a545cd] ⇢ GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status
+[2025-11-04 15:06:35,324] INFO app :: [67a545cd] ⇠ 200 GET /api/process/f6c56fe619544a0f8f2d82ebd5e42040/status (1.315s)
+[2025-11-04 15:08:07,582] INFO app :: [79ee83ce] ⇢ GET /
+[2025-11-04 15:08:07,582] INFO app :: [79ee83ce] ⇠ 200 GET / (0.000s)
+[2025-11-04 15:08:07,619] INFO app :: [61e3619e] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2025-11-04 15:08:07,623] INFO app :: [61e3619e] ⇠ 304 GET /static/images/gijiro-logo-professional.svg (0.003s)
+[2025-11-04 15:08:24,427] INFO app :: [661e88cd] ⇢ GET /api/blob/sas
+[2025-11-04 15:08:24,428] INFO app :: [661e88cd] ⇠ 200 GET /api/blob/sas (0.001s)
+[2025-11-04 15:08:37,892] INFO app :: [f583ebf4] ⇢ GET /api/blob/sas
+[2025-11-04 15:08:37,892] INFO app :: [f583ebf4] ⇠ 200 GET /api/blob/sas (0.000s)
+[2025-11-04 15:08:38,466] INFO app :: [e6916e49] ⇢ POST /api/process
+[2025-11-04 15:08:38,731] INFO app :: [e6916e49] ⇠ 202 POST /api/process (0.265s)
+[2025-11-04 15:08:42,572] INFO app :: [ad459e05] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:08:43,831] INFO app :: [ad459e05] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.259s)
+[2025-11-04 15:08:45,569] INFO app :: [48f50864] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:08:46,852] INFO app :: [48f50864] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.283s)
+[2025-11-04 15:08:48,575] INFO app :: [df12f45e] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:08:49,874] INFO app :: [df12f45e] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.299s)
+[2025-11-04 15:08:51,573] INFO app :: [d608596e] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:08:52,915] INFO app :: [d608596e] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.342s)
+[2025-11-04 15:08:54,575] INFO app :: [5bc7c446] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:08:55,898] INFO app :: [5bc7c446] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.323s)
+[2025-11-04 15:08:57,568] INFO app :: [ed229662] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:08:58,923] INFO app :: [ed229662] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.355s)
+[2025-11-04 15:09:00,577] INFO app :: [c9dd427d] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:01,929] INFO app :: [c9dd427d] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.352s)
+[2025-11-04 15:09:03,592] INFO app :: [c1c3834b] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:04,894] INFO app :: [c1c3834b] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.302s)
+[2025-11-04 15:09:06,570] INFO app :: [cb0ad0d7] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:07,912] INFO app :: [cb0ad0d7] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.342s)
+[2025-11-04 15:09:08,740] INFO app :: [5839e30b] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:10,006] INFO app :: [5839e30b] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.266s)
+[2025-11-04 15:09:11,740] INFO app :: [b2ee8d5c] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:13,088] INFO app :: [b2ee8d5c] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.348s)
+[2025-11-04 15:09:14,745] INFO app :: [0632480d] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:16,100] INFO app :: [0632480d] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.354s)
+[2025-11-04 15:09:18,571] INFO app :: [ea293091] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:19,883] INFO app :: [ea293091] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.312s)
+[2025-11-04 15:09:21,570] INFO app :: [56c9566f] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:22,848] INFO app :: [56c9566f] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.278s)
+[2025-11-04 15:09:24,567] INFO app :: [f36b639b] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:25,868] INFO app :: [f36b639b] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.301s)
+[2025-11-04 15:09:27,580] INFO app :: [30077b21] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:28,876] INFO app :: [30077b21] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.295s)
+[2025-11-04 15:09:30,569] INFO app :: [e3a96f5b] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:32,382] INFO app :: [e3a96f5b] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.813s)
+[2025-11-04 15:09:33,569] INFO app :: [c7d3bdb4] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:34,859] INFO app :: [c7d3bdb4] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.290s)
+[2025-11-04 15:09:36,566] INFO app :: [e90919a9] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:37,892] INFO app :: [e90919a9] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.326s)
+[2025-11-04 15:09:39,569] INFO app :: [2701c353] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:40,901] INFO app :: [2701c353] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.332s)
+[2025-11-04 15:09:42,578] INFO app :: [4844e0f7] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:43,907] INFO app :: [4844e0f7] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.330s)
+[2025-11-04 15:09:45,581] INFO app :: [51ed78b9] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:46,842] INFO app :: [51ed78b9] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.261s)
+[2025-11-04 15:09:48,570] INFO app :: [2540af14] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:49,897] INFO app :: [2540af14] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.327s)
+[2025-11-04 15:09:51,568] INFO app :: [ed53d162] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:52,972] INFO app :: [ed53d162] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.404s)
+[2025-11-04 15:09:54,580] INFO app :: [a9ace649] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:56,347] INFO app :: [a9ace649] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.767s)
+[2025-11-04 15:09:57,569] INFO app :: [b81ff0bf] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:09:58,962] INFO app :: [b81ff0bf] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.392s)
+[2025-11-04 15:10:00,577] INFO app :: [522f14d1] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:10:01,858] INFO app :: [522f14d1] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.281s)
+[2025-11-04 15:10:03,579] INFO app :: [b09a6183] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:10:04,903] INFO app :: [b09a6183] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.324s)
+[2025-11-04 15:10:06,570] INFO app :: [4ecaf3db] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:10:07,909] INFO app :: [4ecaf3db] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.339s)
+[2025-11-04 15:10:09,574] INFO app :: [617756e7] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:10:10,899] INFO app :: [617756e7] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.325s)
+[2025-11-04 15:10:12,573] INFO app :: [1955411b] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:10:14,424] INFO app :: [1955411b] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.851s)
+[2025-11-04 15:10:15,572] INFO app :: [6e5e4a36] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:10:16,996] INFO app :: [6e5e4a36] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.424s)
+[2025-11-04 15:10:25,579] INFO app :: [fdf817b2] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:10:26,962] INFO app :: [fdf817b2] ⇠ 202 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.384s)
+[2025-11-04 15:11:25,576] INFO app :: [88149791] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:11:27,453] INFO app :: [88149791] ⇠ 200 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.877s)
+[2025-11-04 15:11:27,473] INFO app :: [d0156c0b] ⇢ GET /results/41943df9bbf04bb8a968b3f8f115ac77
+[2025-11-04 15:11:27,477] INFO app :: [d0156c0b] ⇠ 200 GET /results/41943df9bbf04bb8a968b3f8f115ac77 (0.004s)
+[2025-11-04 15:11:27,528] INFO app :: [9764376d] ⇢ GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status
+[2025-11-04 15:11:28,969] INFO app :: [9764376d] ⇠ 200 GET /api/process/41943df9bbf04bb8a968b3f8f115ac77/status (1.441s)
+[2025-11-04 15:50:22,079] INFO app :: ✔ routes.py を読み込みます
+[2025-11-04 15:50:22,973] INFO app :: ✔ setup_routes 実行完了
+[2025-11-04 15:50:22,973] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2025-11-04 15:50:22,973] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2025-11-04 15:50:22,973] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2025-11-04 15:50:22,973] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=104857600
+[2025-11-04 15:50:22,991] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2025-11-04 15:50:44,718] INFO app :: [88972b59] ⇢ GET /
+[2025-11-04 15:50:44,727] INFO app :: [88972b59] ⇠ 200 GET / (0.009s)
+[2025-11-04 15:50:44,794] INFO app :: [73911fda] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2025-11-04 15:50:44,922] INFO app :: [73911fda] ⇠ 304 GET /static/images/gijiro-logo-professional.svg (0.128s)
+[2025-11-04 15:51:43,149] INFO app :: [23f2bb8f] ⇢ GET /error
+[2025-11-04 15:51:43,163] INFO app :: [23f2bb8f] ⇠ 413 GET /error (0.014s)
+[2025-11-04 15:51:57,554] INFO app :: [321fa4a2] ⇢ GET /
+[2025-11-04 15:51:57,555] INFO app :: [321fa4a2] ⇠ 200 GET / (0.001s)
+[2025-11-04 15:51:57,588] INFO app :: [07ba51c6] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2025-11-04 15:51:57,591] INFO app :: [07ba51c6] ⇠ 304 GET /static/images/gijiro-logo-professional.svg (0.003s)
+[2025-11-04 15:52:23,357] INFO app :: [1cab56f3] ⇢ GET /error
+[2025-11-04 15:52:23,358] INFO app :: [1cab56f3] ⇠ 413 GET /error (0.001s)
+[2025-11-04 15:52:34,310] INFO app :: [c731b432] ⇢ GET /healthz
+[2025-11-04 15:52:34,312] INFO app :: [c731b432] ⇠ 200 GET /healthz (0.002s)
+[2025-11-04 15:52:38,149] INFO app :: [f2af4430] ⇢ GET /
+[2025-11-04 15:52:38,151] INFO app :: [f2af4430] ⇠ 200 GET / (0.002s)
+[2025-11-04 15:52:38,185] INFO app :: [b707afd3] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2025-11-04 15:52:38,187] INFO app :: [b707afd3] ⇠ 304 GET /static/images/gijiro-logo-professional.svg (0.002s)
+[2025-11-04 15:53:00,808] INFO app :: [7a33566a] ⇢ GET /api/blob/sas
+[2025-11-04 15:53:00,808] INFO app :: [7a33566a] ⇠ 200 GET /api/blob/sas (0.000s)
+[2025-11-04 15:53:06,523] INFO app :: [07038230] ⇢ GET /api/blob/sas
+[2025-11-04 15:53:06,523] INFO app :: [07038230] ⇠ 200 GET /api/blob/sas (0.000s)
+[2025-11-04 15:53:06,780] INFO app :: [6140002d] ⇢ POST /api/process
+[2025-11-04 15:53:08,257] INFO app :: [6140002d] ⇠ 202 POST /api/process (1.477s)
+[2025-11-04 15:53:11,274] INFO app :: [f907b4e9] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:12,490] INFO app :: [f907b4e9] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.216s)
+[2025-11-04 15:53:14,279] INFO app :: [7475b3b9] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:15,603] INFO app :: [7475b3b9] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.323s)
+[2025-11-04 15:53:17,279] INFO app :: [71f8635b] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:18,569] INFO app :: [71f8635b] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.290s)
+[2025-11-04 15:53:20,278] INFO app :: [d9cdc989] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:21,552] INFO app :: [d9cdc989] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.274s)
+[2025-11-04 15:53:23,276] INFO app :: [cf426645] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:24,500] INFO app :: [cf426645] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.225s)
+[2025-11-04 15:53:26,278] INFO app :: [8c3eee78] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:27,539] INFO app :: [8c3eee78] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.260s)
+[2025-11-04 15:53:29,276] INFO app :: [469af994] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:30,539] INFO app :: [469af994] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.263s)
+[2025-11-04 15:53:32,593] INFO app :: [9fbd38b3] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:33,863] INFO app :: [9fbd38b3] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.269s)
+[2025-11-04 15:53:35,592] INFO app :: [cc5e9b01] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:36,851] INFO app :: [cc5e9b01] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.259s)
+[2025-11-04 15:53:38,608] INFO app :: [3f14d5e0] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:40,026] INFO app :: [3f14d5e0] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.419s)
+[2025-11-04 15:53:41,592] INFO app :: [69a35e80] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:42,985] INFO app :: [69a35e80] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.393s)
+[2025-11-04 15:53:44,595] INFO app :: [f3a11ad4] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:45,848] INFO app :: [f3a11ad4] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.253s)
+[2025-11-04 15:53:47,591] INFO app :: [df9e9c13] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:48,926] INFO app :: [df9e9c13] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.335s)
+[2025-11-04 15:53:50,594] INFO app :: [b3e7bae2] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:51,941] INFO app :: [b3e7bae2] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.347s)
+[2025-11-04 15:53:53,594] INFO app :: [a2867a4a] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:54,917] INFO app :: [a2867a4a] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.323s)
+[2025-11-04 15:53:56,594] INFO app :: [25ad4728] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:53:57,809] INFO app :: [25ad4728] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.215s)
+[2025-11-04 15:53:59,593] INFO app :: [ab604bbf] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:54:00,859] INFO app :: [ab604bbf] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.266s)
+[2025-11-04 15:54:02,597] INFO app :: [529b8091] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:54:03,913] INFO app :: [529b8091] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.316s)
+[2025-11-04 15:54:05,593] INFO app :: [288b4075] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:54:06,809] INFO app :: [288b4075] ⇠ 202 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.216s)
+[2025-11-04 15:54:08,593] INFO app :: [0f40f5a4] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:54:09,930] INFO app :: [0f40f5a4] ⇠ 200 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.337s)
+[2025-11-04 15:54:09,940] INFO app :: [54a02049] ⇢ GET /results/6712bab8ea874f94a5e42645eeb20e5b
+[2025-11-04 15:54:09,952] INFO app :: [54a02049] ⇠ 200 GET /results/6712bab8ea874f94a5e42645eeb20e5b (0.012s)
+[2025-11-04 15:54:09,986] INFO app :: [1b1a83d5] ⇢ GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status
+[2025-11-04 15:54:11,268] INFO app :: [1b1a83d5] ⇠ 200 GET /api/process/6712bab8ea874f94a5e42645eeb20e5b/status (1.283s)
+[2025-11-07 10:07:58,078] INFO app :: ✔ routes.py を読み込みます
+[2025-11-07 10:07:59,010] INFO app :: ✔ setup_routes 実行完了
+[2025-11-07 10:07:59,011] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2025-11-07 10:07:59,011] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2025-11-07 10:07:59,011] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2025-11-07 10:07:59,011] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2025-11-07 10:07:59,052] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2025-11-07 10:09:16,970] INFO app :: [f8b9b3d2] ⇢ GET /
+[2025-11-07 10:09:16,974] INFO app :: [f8b9b3d2] ⇠ 200 GET / (0.004s)
+[2025-11-07 10:09:17,003] INFO app :: [a9a0c954] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2025-11-07 10:09:17,042] INFO app :: [a9a0c954] ⇠ 200 GET /static/images/gijiro-logo-professional.svg (0.039s)
+[2025-11-07 10:09:17,099] INFO app :: [cd2826f3] ⇢ GET /favicon.ico
+[2025-11-07 10:09:17,110] INFO app :: [cd2826f3] ⇠ 404 GET /favicon.ico (0.011s)
+[2025-11-07 10:11:31,141] INFO app :: [80aea5fc] ⇢ GET /api/blob/sas
+[2025-11-07 10:11:31,141] INFO app :: [80aea5fc] ⇠ 200 GET /api/blob/sas (0.000s)
+[2025-11-07 10:11:33,071] INFO app :: [9e922265] ⇢ GET /api/blob/sas
+[2025-11-07 10:11:33,071] INFO app :: [9e922265] ⇠ 200 GET /api/blob/sas (0.000s)
+[2025-11-07 10:11:33,336] INFO app :: [d29830e8] ⇢ POST /api/process
+[2025-11-07 10:11:34,361] INFO app :: [d29830e8] ⇠ 202 POST /api/process (1.025s)
+[2025-11-07 10:11:38,034] INFO app :: [72a69989] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:11:38,907] INFO app :: [72a69989] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.872s)
+[2025-11-07 10:11:41,042] INFO app :: [84c5690c] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:11:41,874] INFO app :: [84c5690c] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.833s)
+[2025-11-07 10:11:44,041] INFO app :: [ade33a05] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:11:44,891] INFO app :: [ade33a05] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.850s)
+[2025-11-07 10:11:47,033] INFO app :: [f3cc22c9] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:11:47,873] INFO app :: [f3cc22c9] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.840s)
+[2025-11-07 10:11:50,041] INFO app :: [de83d4d5] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:11:50,890] INFO app :: [de83d4d5] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.849s)
+[2025-11-07 10:11:53,059] INFO app :: [49c734e7] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:11:53,893] INFO app :: [49c734e7] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.835s)
+[2025-11-07 10:11:56,036] INFO app :: [553153f5] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:11:56,890] INFO app :: [553153f5] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.855s)
+[2025-11-07 10:11:59,036] INFO app :: [d9fa2e58] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:11:59,878] INFO app :: [d9fa2e58] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.842s)
+[2025-11-07 10:12:02,044] INFO app :: [b657f961] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:02,887] INFO app :: [b657f961] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.842s)
+[2025-11-07 10:12:05,043] INFO app :: [46a94d29] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:05,877] INFO app :: [46a94d29] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.833s)
+[2025-11-07 10:12:08,046] INFO app :: [ad089fef] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:08,887] INFO app :: [ad089fef] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.841s)
+[2025-11-07 10:12:11,042] INFO app :: [5a99fedc] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:11,874] INFO app :: [5a99fedc] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.833s)
+[2025-11-07 10:12:14,040] INFO app :: [43627aeb] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:14,910] INFO app :: [43627aeb] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.871s)
+[2025-11-07 10:12:17,035] INFO app :: [e3116944] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:17,873] INFO app :: [e3116944] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.839s)
+[2025-11-07 10:12:20,045] INFO app :: [20393559] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:20,959] INFO app :: [20393559] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.914s)
+[2025-11-07 10:12:23,035] INFO app :: [293cdc9f] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:23,924] INFO app :: [293cdc9f] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.889s)
+[2025-11-07 10:12:26,037] INFO app :: [d7d2726a] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:27,110] INFO app :: [d7d2726a] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (1.073s)
+[2025-11-07 10:12:29,035] INFO app :: [aa2cb252] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:29,925] INFO app :: [aa2cb252] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.890s)
+[2025-11-07 10:12:32,041] INFO app :: [26c568e7] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:33,025] INFO app :: [26c568e7] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.984s)
+[2025-11-07 10:12:51,728] INFO app :: [96f29de1] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:52,603] INFO app :: [96f29de1] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.875s)
+[2025-11-07 10:12:52,603] INFO app :: [eb361260] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:54,214] INFO app :: [eb361260] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (1.611s)
+[2025-11-07 10:12:55,374] INFO app :: [12d56412] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:56,193] INFO app :: [12d56412] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.818s)
+[2025-11-07 10:12:58,373] INFO app :: [a50fa9a1] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:12:59,258] INFO app :: [a50fa9a1] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.885s)
+[2025-11-07 10:13:01,381] INFO app :: [a23b200c] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:02,241] INFO app :: [a23b200c] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.859s)
+[2025-11-07 10:13:05,044] INFO app :: [6e3476c8] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:05,875] INFO app :: [6e3476c8] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.831s)
+[2025-11-07 10:13:08,041] INFO app :: [e5e6eb37] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:08,875] INFO app :: [e5e6eb37] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.834s)
+[2025-11-07 10:13:11,043] INFO app :: [e1913181] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:11,875] INFO app :: [e1913181] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.832s)
+[2025-11-07 10:13:14,043] INFO app :: [f81f55fe] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:14,873] INFO app :: [f81f55fe] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.829s)
+[2025-11-07 10:13:17,042] INFO app :: [6f523f6e] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:17,875] INFO app :: [6f523f6e] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.832s)
+[2025-11-07 10:13:20,042] INFO app :: [ab73f534] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:20,878] INFO app :: [ab73f534] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.836s)
+[2025-11-07 10:13:23,041] INFO app :: [203b579f] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:23,882] INFO app :: [203b579f] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.841s)
+[2025-11-07 10:13:26,041] INFO app :: [898976d4] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:26,890] INFO app :: [898976d4] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.849s)
+[2025-11-07 10:13:29,040] INFO app :: [bf555232] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:29,876] INFO app :: [bf555232] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.836s)
+[2025-11-07 10:13:32,035] INFO app :: [718d7e6c] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:32,890] INFO app :: [718d7e6c] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.855s)
+[2025-11-07 10:13:35,037] INFO app :: [988d25e7] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:35,936] INFO app :: [988d25e7] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.900s)
+[2025-11-07 10:13:38,039] INFO app :: [47b5e492] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:38,939] INFO app :: [47b5e492] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.900s)
+[2025-11-07 10:13:41,049] INFO app :: [67a90eb8] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:42,415] INFO app :: [67a90eb8] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (1.366s)
+[2025-11-07 10:13:44,036] INFO app :: [96c83796] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:44,859] INFO app :: [96c83796] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.824s)
+[2025-11-07 10:13:47,046] INFO app :: [9e1853dd] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:47,907] INFO app :: [9e1853dd] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.861s)
+[2025-11-07 10:13:50,046] INFO app :: [17984b59] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:50,891] INFO app :: [17984b59] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.845s)
+[2025-11-07 10:13:53,037] INFO app :: [a7e2146e] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:53,908] INFO app :: [a7e2146e] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.871s)
+[2025-11-07 10:13:56,050] INFO app :: [3fe356d6] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:56,901] INFO app :: [3fe356d6] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.851s)
+[2025-11-07 10:13:59,051] INFO app :: [7d437055] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:13:59,890] INFO app :: [7d437055] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.839s)
+[2025-11-07 10:14:02,036] INFO app :: [433f7696] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:14:02,860] INFO app :: [433f7696] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.824s)
+[2025-11-07 10:14:10,046] INFO app :: [a79c299d] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:14:10,957] INFO app :: [a79c299d] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.911s)
+[2025-11-07 10:15:10,049] INFO app :: [fc1ff87d] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:15:10,933] INFO app :: [fc1ff87d] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.883s)
+[2025-11-07 10:15:16,018] INFO app :: [1339ac4c] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:15:16,859] INFO app :: [1339ac4c] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.841s)
+[2025-11-07 10:15:16,859] INFO app :: [74a81b58] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:15:17,725] INFO app :: [74a81b58] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.866s)
+[2025-11-07 10:15:19,381] INFO app :: [28687339] ⇢ GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status
+[2025-11-07 10:15:20,216] INFO app :: [28687339] ⇠ 202 GET /api/process/1ea0bd45661b4274b469cd89da974e9e/status (0.835s)
+[2025-12-04 11:39:30,266] WARNING app :: [WARNING] routes.py の読み込みに失敗しました: No module named 'azure.storage.queue'
+[2025-12-04 11:39:30,266] INFO app :: === URL MAP ===
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+[2025-12-04 11:39:30,267] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2025-12-04 11:39:30,267] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2025-12-04 11:39:30,267] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2025-12-04 11:39:30,335] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2025-12-04 11:40:27,585] INFO app :: [41bd0d1c] ⇢ GET /
+[2025-12-04 11:40:27,605] INFO app :: [41bd0d1c] ⇠ 404 GET / (0.020s)
+[2025-12-04 11:40:27,812] INFO app :: [ba0b7ed9] ⇢ GET /favicon.ico
+[2025-12-04 11:40:27,814] INFO app :: [ba0b7ed9] ⇠ 404 GET /favicon.ico (0.002s)
+[2025-12-04 11:40:42,743] INFO app :: [84c0ccca] ⇢ GET /
+[2025-12-04 11:40:42,744] INFO app :: [84c0ccca] ⇠ 404 GET / (0.001s)
+[2025-12-04 11:42:00,150] INFO app :: ✔ routes.py を読み込みます
+[2025-12-04 11:42:01,068] INFO app :: ✔ setup_routes 実行完了
+[2025-12-04 11:42:01,068] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2025-12-04 11:42:01,068] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2025-12-04 11:42:01,069] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2025-12-04 11:42:01,069] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2025-12-04 11:42:01,099] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2025-12-04 11:43:23,477] INFO app :: [4689bebc] ⇢ GET /
+[2025-12-04 11:43:23,481] INFO app :: [4689bebc] ⇠ 200 GET / (0.004s)
+[2025-12-04 11:43:23,509] INFO app :: [abd17b2b] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2025-12-04 11:43:23,562] INFO app :: [abd17b2b] ⇠ 200 GET /static/images/gijiro-logo-professional.svg (0.053s)
+[2025-12-04 11:43:51,097] INFO app :: [d27b3c40] ⇢ GET /api/blob/sas
+[2025-12-04 11:43:51,097] INFO app :: [d27b3c40] ⇠ 200 GET /api/blob/sas (0.000s)
+[2025-12-04 11:43:52,935] INFO app :: [5fea7b10] ⇢ GET /api/blob/sas
+[2025-12-04 11:43:52,935] INFO app :: [5fea7b10] ⇠ 200 GET /api/blob/sas (0.000s)
+[2025-12-04 11:43:53,191] INFO app :: [37915461] ⇢ POST /api/process
+[2025-12-04 11:43:54,542] INFO app :: [37915461] ⇠ 202 POST /api/process (1.351s)
+[2025-12-04 11:43:57,565] INFO app :: [b5272e46] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:43:58,438] INFO app :: [b5272e46] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.873s)
+[2025-12-04 11:44:00,563] INFO app :: [15afbcd7] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:01,479] INFO app :: [15afbcd7] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.917s)
+[2025-12-04 11:44:03,560] INFO app :: [23277ca3] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:04,397] INFO app :: [23277ca3] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.837s)
+[2025-12-04 11:44:06,564] INFO app :: [cf0b020a] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:07,404] INFO app :: [cf0b020a] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.840s)
+[2025-12-04 11:44:09,556] INFO app :: [a4a4d910] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:10,392] INFO app :: [a4a4d910] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.836s)
+[2025-12-04 11:44:12,564] INFO app :: [c111c07c] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:13,426] INFO app :: [c111c07c] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.862s)
+[2025-12-04 11:44:15,561] INFO app :: [20c77762] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:16,405] INFO app :: [20c77762] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.843s)
+[2025-12-04 11:44:18,562] INFO app :: [74d0d515] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:19,434] INFO app :: [74d0d515] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.873s)
+[2025-12-04 11:44:21,556] INFO app :: [8f17297e] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:22,414] INFO app :: [8f17297e] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.857s)
+[2025-12-04 11:44:24,566] INFO app :: [d0c7367f] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:25,424] INFO app :: [d0c7367f] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.858s)
+[2025-12-04 11:44:27,555] INFO app :: [0df1cda8] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:28,409] INFO app :: [0df1cda8] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.854s)
+[2025-12-04 11:44:30,558] INFO app :: [87038a4c] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:31,431] INFO app :: [87038a4c] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.873s)
+[2025-12-04 11:44:33,565] INFO app :: [ed3d58a1] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:34,424] INFO app :: [ed3d58a1] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.859s)
+[2025-12-04 11:44:36,557] INFO app :: [f2e8fa35] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:37,391] INFO app :: [f2e8fa35] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.834s)
+[2025-12-04 11:44:39,557] INFO app :: [6c12bc75] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:40,384] INFO app :: [6c12bc75] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.827s)
+[2025-12-04 11:44:42,564] INFO app :: [2b8da589] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:43,473] INFO app :: [2b8da589] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.909s)
+[2025-12-04 11:44:45,560] INFO app :: [b1b6451b] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:46,408] INFO app :: [b1b6451b] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.848s)
+[2025-12-04 11:44:48,564] INFO app :: [73eeffc4] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:49,433] INFO app :: [73eeffc4] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.869s)
+[2025-12-04 11:44:51,558] INFO app :: [aedbe113] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:52,409] INFO app :: [aedbe113] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.851s)
+[2025-12-04 11:44:54,556] INFO app :: [9ed0c67b] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:55,393] INFO app :: [9ed0c67b] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.836s)
+[2025-12-04 11:44:57,556] INFO app :: [f042010a] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:44:58,401] INFO app :: [f042010a] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.845s)
+[2025-12-04 11:45:00,557] INFO app :: [66065a68] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:45:01,445] INFO app :: [66065a68] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.888s)
+[2025-12-04 11:45:03,557] INFO app :: [40488b50] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:45:04,460] INFO app :: [40488b50] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.903s)
+[2025-12-04 11:45:06,560] INFO app :: [f5855207] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:45:07,412] INFO app :: [f5855207] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.852s)
+[2025-12-04 11:45:09,562] INFO app :: [bfcdaae1] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:45:10,412] INFO app :: [bfcdaae1] ⇠ 202 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.850s)
+[2025-12-04 11:45:12,561] INFO app :: [eb99d520] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:45:13,410] INFO app :: [eb99d520] ⇠ 200 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.849s)
+[2025-12-04 11:45:13,442] INFO app :: [cf9f8986] ⇢ GET /results/0fbd6b2e3f2449029e3c1cbedd0383cb
+[2025-12-04 11:45:13,446] INFO app :: [cf9f8986] ⇠ 200 GET /results/0fbd6b2e3f2449029e3c1cbedd0383cb (0.004s)
+[2025-12-04 11:45:13,502] INFO app :: [f19f2ec7] ⇢ GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status
+[2025-12-04 11:45:14,379] INFO app :: [f19f2ec7] ⇠ 200 GET /api/process/0fbd6b2e3f2449029e3c1cbedd0383cb/status (0.877s)
+[2025-12-04 11:47:23,284] INFO app :: [9c7a1e9b] ⇢ GET /
+[2025-12-04 11:47:23,284] INFO app :: [9c7a1e9b] ⇠ 200 GET / (0.000s)
+[2025-12-04 11:47:23,320] INFO app :: [d31476a2] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2025-12-04 11:47:23,322] INFO app :: [d31476a2] ⇠ 304 GET /static/images/gijiro-logo-professional.svg (0.002s)
+[2025-12-04 11:47:46,242] INFO app :: [a0d5ec2c] ⇢ GET /api/blob/sas
+[2025-12-04 11:47:46,244] INFO app :: [a0d5ec2c] ⇠ 200 GET /api/blob/sas (0.002s)
+[2025-12-04 11:47:48,192] INFO app :: [e90c36ed] ⇢ GET /api/blob/sas
+[2025-12-04 11:47:48,192] INFO app :: [e90c36ed] ⇠ 200 GET /api/blob/sas (0.001s)
+[2025-12-04 11:47:48,452] INFO app :: [0d38dd5f] ⇢ POST /api/process
+[2025-12-04 11:47:49,471] INFO app :: [0d38dd5f] ⇠ 202 POST /api/process (1.019s)
+[2025-12-04 11:47:53,063] INFO app :: [f91af15a] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:47:53,958] INFO app :: [f91af15a] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (0.894s)
+[2025-12-04 11:47:56,067] INFO app :: [a3d7387c] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:47:56,927] INFO app :: [a3d7387c] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (0.861s)
+[2025-12-04 11:47:59,060] INFO app :: [4d4897bd] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:47:59,909] INFO app :: [4d4897bd] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (0.849s)
+[2025-12-04 11:48:02,063] INFO app :: [90780c09] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:02,929] INFO app :: [90780c09] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (0.866s)
+[2025-12-04 11:48:05,064] INFO app :: [7d0ec4bb] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:05,944] INFO app :: [7d0ec4bb] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (0.879s)
+[2025-12-04 11:48:08,069] INFO app :: [4f239d7e] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:09,398] INFO app :: [4f239d7e] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.329s)
+[2025-12-04 11:48:11,060] INFO app :: [1b2f0fed] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:12,507] INFO app :: [1b2f0fed] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.447s)
+[2025-12-04 11:48:14,069] INFO app :: [53d10a06] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:15,352] INFO app :: [53d10a06] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.284s)
+[2025-12-04 11:48:17,063] INFO app :: [0c99a778] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:18,345] INFO app :: [0c99a778] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.282s)
+[2025-12-04 11:48:20,062] INFO app :: [eccdc167] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:21,320] INFO app :: [eccdc167] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.257s)
+[2025-12-04 11:48:23,069] INFO app :: [e6bd22c7] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:24,335] INFO app :: [e6bd22c7] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.267s)
+[2025-12-04 11:48:26,062] INFO app :: [7fb4e407] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:27,369] INFO app :: [7fb4e407] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.307s)
+[2025-12-04 11:48:29,065] INFO app :: [e35a5a48] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:30,396] INFO app :: [e35a5a48] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.331s)
+[2025-12-04 11:48:32,063] INFO app :: [3877a964] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:33,366] INFO app :: [3877a964] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.304s)
+[2025-12-04 11:48:35,067] INFO app :: [39c31489] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:36,365] INFO app :: [39c31489] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.298s)
+[2025-12-04 11:48:38,065] INFO app :: [ecd5f618] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:39,526] INFO app :: [ecd5f618] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.461s)
+[2025-12-04 11:48:41,063] INFO app :: [8f10554e] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:42,317] INFO app :: [8f10554e] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.254s)
+[2025-12-04 11:48:44,064] INFO app :: [df666a47] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:45,384] INFO app :: [df666a47] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.319s)
+[2025-12-04 11:48:47,061] INFO app :: [9a7aef42] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:48,400] INFO app :: [9a7aef42] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.340s)
+[2025-12-04 11:48:50,062] INFO app :: [6de51267] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:51,338] INFO app :: [6de51267] ⇠ 202 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.276s)
+[2025-12-04 11:48:53,064] INFO app :: [54d6b96d] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:54,308] INFO app :: [54d6b96d] ⇠ 200 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.244s)
+[2025-12-04 11:48:54,330] INFO app :: [b831609d] ⇢ GET /results/f096202325b548a0b3e0c5134f0bb15a
+[2025-12-04 11:48:54,330] INFO app :: [b831609d] ⇠ 200 GET /results/f096202325b548a0b3e0c5134f0bb15a (0.000s)
+[2025-12-04 11:48:54,373] INFO app :: [50bd36ab] ⇢ GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status
+[2025-12-04 11:48:55,706] INFO app :: [50bd36ab] ⇠ 200 GET /api/process/f096202325b548a0b3e0c5134f0bb15a/status (1.333s)
+[2026-01-21 17:10:52,766] INFO app :: ✔ routes.py を読み込みます
+[2026-01-21 17:10:53,706] INFO app :: ✔ setup_routes 実行完了
+[2026-01-21 17:10:53,715] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2026-01-21 17:10:53,715] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2026-01-21 17:10:53,715] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2026-01-21 17:10:53,716] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2026-01-21 17:10:53,772] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2026-01-21 17:11:58,348] INFO app :: [412db9e1] ⇢ GET /
+[2026-01-21 17:11:58,365] INFO app :: [412db9e1] ⇠ 200 GET / (0.017s)
+[2026-01-21 17:11:58,450] INFO app :: [2ec8a310] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2026-01-21 17:11:58,507] INFO app :: [2ec8a310] ⇠ 200 GET /static/images/gijiro-logo-professional.svg (0.056s)
+[2026-01-21 17:11:58,563] INFO app :: [4051811f] ⇢ GET /favicon.ico
+[2026-01-21 17:11:58,583] INFO app :: [4051811f] ⇠ 404 GET /favicon.ico (0.019s)
+[2026-01-21 17:13:14,280] INFO app :: [92cd547b] ⇢ GET /api/blob/sas
+[2026-01-21 17:13:14,280] INFO app :: [92cd547b] ⇠ 200 GET /api/blob/sas (0.000s)
+[2026-01-21 17:13:16,079] INFO app :: [a1e097ce] ⇢ GET /api/blob/sas
+[2026-01-21 17:13:16,079] INFO app :: [a1e097ce] ⇠ 200 GET /api/blob/sas (0.000s)
+[2026-01-21 17:13:16,345] INFO app :: [25304e69] ⇢ POST /api/process
+[2026-01-21 17:13:17,350] INFO app :: [25304e69] ⇠ 202 POST /api/process (1.005s)
+[2026-01-21 17:13:20,364] INFO app :: [f4dd32f0] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:21,252] INFO app :: [f4dd32f0] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.889s)
+[2026-01-21 17:13:23,371] INFO app :: [38b786c8] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:24,212] INFO app :: [38b786c8] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.841s)
+[2026-01-21 17:13:26,370] INFO app :: [5f2ae44f] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:27,219] INFO app :: [5f2ae44f] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.849s)
+[2026-01-21 17:13:29,370] INFO app :: [e4c81844] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:30,220] INFO app :: [e4c81844] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.850s)
+[2026-01-21 17:13:32,370] INFO app :: [412679b3] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:33,235] INFO app :: [412679b3] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.866s)
+[2026-01-21 17:13:35,370] INFO app :: [a4541915] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:36,262] INFO app :: [a4541915] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.891s)
+[2026-01-21 17:13:38,369] INFO app :: [65d2317e] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:39,206] INFO app :: [65d2317e] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.836s)
+[2026-01-21 17:13:41,362] INFO app :: [6cefe07d] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:42,202] INFO app :: [6cefe07d] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.839s)
+[2026-01-21 17:13:44,371] INFO app :: [7f2ca893] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:45,233] INFO app :: [7f2ca893] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.862s)
+[2026-01-21 17:13:47,368] INFO app :: [c8d78351] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:48,207] INFO app :: [c8d78351] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.838s)
+[2026-01-21 17:13:50,366] INFO app :: [6e57ab6e] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:51,170] INFO app :: [6e57ab6e] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.804s)
+[2026-01-21 17:13:53,366] INFO app :: [2832a782] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:54,234] INFO app :: [2832a782] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.868s)
+[2026-01-21 17:13:56,371] INFO app :: [387e1f9e] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:13:57,232] INFO app :: [387e1f9e] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.861s)
+[2026-01-21 17:13:59,364] INFO app :: [2d72a9ed] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:14:00,204] INFO app :: [2d72a9ed] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.840s)
+[2026-01-21 17:14:02,363] INFO app :: [03b01c2d] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:14:03,224] INFO app :: [03b01c2d] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.861s)
+[2026-01-21 17:14:05,360] INFO app :: [646edba3] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:14:06,204] INFO app :: [646edba3] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.844s)
+[2026-01-21 17:14:08,371] INFO app :: [fdcd6a28] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:14:09,204] INFO app :: [fdcd6a28] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.833s)
+[2026-01-21 17:14:11,372] INFO app :: [5b0030ad] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:14:12,253] INFO app :: [5b0030ad] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.881s)
+[2026-01-21 17:14:14,364] INFO app :: [40911325] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:14:15,187] INFO app :: [40911325] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.824s)
+[2026-01-21 17:14:17,370] INFO app :: [ae0bf9bd] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:14:18,209] INFO app :: [ae0bf9bd] ⇠ 202 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.839s)
+[2026-01-21 17:14:21,188] INFO app :: [94e08964] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:14:22,171] INFO app :: [94e08964] ⇠ 200 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (0.982s)
+[2026-01-21 17:14:22,198] INFO app :: [d66cdae9] ⇢ GET /results/4426d2eb560f45fe8370ff4ee8a7cfc9
+[2026-01-21 17:14:22,213] INFO app :: [d66cdae9] ⇠ 200 GET /results/4426d2eb560f45fe8370ff4ee8a7cfc9 (0.015s)
+[2026-01-21 17:14:22,237] INFO app :: [53765be0] ⇢ GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status
+[2026-01-21 17:14:23,247] INFO app :: [53765be0] ⇠ 200 GET /api/process/4426d2eb560f45fe8370ff4ee8a7cfc9/status (1.010s)
+[2026-01-21 17:17:39,830] INFO app :: [0194a868] ⇢ GET /
+[2026-01-21 17:17:39,831] INFO app :: [0194a868] ⇠ 200 GET / (0.001s)
+[2026-01-21 17:17:39,853] INFO app :: [3b6e95e2] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2026-01-21 17:17:39,859] INFO app :: [3b6e95e2] ⇠ 304 GET /static/images/gijiro-logo-professional.svg (0.006s)
+[2026-01-21 17:18:14,780] INFO app :: [4a80aecc] ⇢ GET /api/blob/sas
+[2026-01-21 17:18:14,781] INFO app :: [4a80aecc] ⇠ 200 GET /api/blob/sas (0.001s)
+[2026-01-21 17:18:18,957] INFO app :: [1a6dea22] ⇢ GET /api/blob/sas
+[2026-01-21 17:18:18,959] INFO app :: [1a6dea22] ⇠ 200 GET /api/blob/sas (0.002s)
+[2026-01-21 17:18:19,222] INFO app :: [29114849] ⇢ POST /api/process
+[2026-01-21 17:18:20,607] INFO app :: [29114849] ⇠ 202 POST /api/process (1.383s)
+[2026-01-21 17:18:24,190] INFO app :: [06f3cdb7] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:18:25,439] INFO app :: [06f3cdb7] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.250s)
+[2026-01-21 17:18:27,192] INFO app :: [ed487c5b] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:18:28,433] INFO app :: [ed487c5b] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.240s)
+[2026-01-21 17:18:30,194] INFO app :: [871feef9] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:18:31,390] INFO app :: [871feef9] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.196s)
+[2026-01-21 17:18:33,190] INFO app :: [ba25baf2] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:18:35,250] INFO app :: [ba25baf2] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (2.060s)
+[2026-01-21 17:18:36,190] INFO app :: [244a363a] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:18:37,464] INFO app :: [244a363a] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.274s)
+[2026-01-21 17:18:39,193] INFO app :: [97d3fd64] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:18:40,492] INFO app :: [97d3fd64] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.298s)
+[2026-01-21 17:18:42,190] INFO app :: [5abdd878] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:18:43,491] INFO app :: [5abdd878] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.301s)
+[2026-01-21 17:18:45,184] INFO app :: [bcc038a4] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:18:46,507] INFO app :: [bcc038a4] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.323s)
+[2026-01-21 17:18:48,190] INFO app :: [4e3386fa] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:18:49,467] INFO app :: [4e3386fa] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.277s)
+[2026-01-21 17:18:51,190] INFO app :: [7b79fc7e] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:18:52,506] INFO app :: [7b79fc7e] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.316s)
+[2026-01-21 17:18:54,201] INFO app :: [43728c3c] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:18:55,584] INFO app :: [43728c3c] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.383s)
+[2026-01-21 17:18:57,202] INFO app :: [85f3c0fa] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:18:58,747] INFO app :: [85f3c0fa] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.545s)
+[2026-01-21 17:19:00,187] INFO app :: [f6dd6c2a] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:19:01,423] INFO app :: [f6dd6c2a] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.237s)
+[2026-01-21 17:19:03,194] INFO app :: [3f1715c8] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:19:04,424] INFO app :: [3f1715c8] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.230s)
+[2026-01-21 17:19:06,193] INFO app :: [229f7748] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:19:07,463] INFO app :: [229f7748] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.271s)
+[2026-01-21 17:19:09,195] INFO app :: [65d72c67] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:19:10,422] INFO app :: [65d72c67] ⇠ 202 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.227s)
+[2026-01-21 17:19:12,185] INFO app :: [a12b9fe0] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:19:13,406] INFO app :: [a12b9fe0] ⇠ 200 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.220s)
+[2026-01-21 17:19:13,425] INFO app :: [3e22d17f] ⇢ GET /results/c1209a103077492f8f60d9993e44821d
+[2026-01-21 17:19:13,425] INFO app :: [3e22d17f] ⇠ 200 GET /results/c1209a103077492f8f60d9993e44821d (0.000s)
+[2026-01-21 17:19:13,450] INFO app :: [8199cf0f] ⇢ GET /api/process/c1209a103077492f8f60d9993e44821d/status
+[2026-01-21 17:19:14,674] INFO app :: [8199cf0f] ⇠ 200 GET /api/process/c1209a103077492f8f60d9993e44821d/status (1.224s)
+[2026-01-21 17:23:01,443] INFO app :: ✔ routes.py を読み込みます
+[2026-01-21 17:23:02,347] INFO app :: ✔ setup_routes 実行完了
+[2026-01-21 17:23:02,348] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2026-01-21 17:23:02,348] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2026-01-21 17:23:02,348] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2026-01-21 17:23:02,348] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2026-01-21 17:23:02,371] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2026-01-21 17:23:25,766] INFO app :: [67084ca1] ⇢ GET /
+[2026-01-21 17:23:25,772] INFO app :: [67084ca1] ⇠ 200 GET / (0.006s)
+[2026-01-21 17:23:25,861] INFO app :: [64ee6e41] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2026-01-21 17:23:25,930] INFO app :: [64ee6e41] ⇠ 304 GET /static/images/gijiro-logo-professional.svg (0.069s)
+[2026-01-21 17:24:02,288] INFO app :: [39799602] ⇢ GET /api/blob/sas
+[2026-01-21 17:24:02,288] INFO app :: [39799602] ⇠ 200 GET /api/blob/sas (0.000s)
+[2026-01-21 17:24:06,559] INFO app :: [65fc822a] ⇢ GET /api/blob/sas
+[2026-01-21 17:24:06,559] INFO app :: [65fc822a] ⇠ 200 GET /api/blob/sas (0.000s)
+[2026-01-21 17:24:06,823] INFO app :: [8ec8c8d4] ⇢ POST /api/process
+[2026-01-21 17:24:07,851] INFO app :: [8ec8c8d4] ⇠ 202 POST /api/process (1.029s)
+[2026-01-21 17:24:11,198] INFO app :: [3ef40670] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:12,039] INFO app :: [3ef40670] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.841s)
+[2026-01-21 17:24:14,197] INFO app :: [20a9349e] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:15,073] INFO app :: [20a9349e] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.875s)
+[2026-01-21 17:24:17,196] INFO app :: [ff07d046] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:18,409] INFO app :: [ff07d046] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.213s)
+[2026-01-21 17:24:20,195] INFO app :: [de89bd10] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:21,438] INFO app :: [de89bd10] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.243s)
+[2026-01-21 17:24:23,197] INFO app :: [1a077fb0] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:24,446] INFO app :: [1a077fb0] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.249s)
+[2026-01-21 17:24:26,196] INFO app :: [260b3c69] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:27,465] INFO app :: [260b3c69] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.269s)
+[2026-01-21 17:24:29,195] INFO app :: [676b4c0e] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:30,453] INFO app :: [676b4c0e] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.258s)
+[2026-01-21 17:24:32,197] INFO app :: [df78d979] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:33,431] INFO app :: [df78d979] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.234s)
+[2026-01-21 17:24:35,190] INFO app :: [cf238b6c] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:36,521] INFO app :: [cf238b6c] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.332s)
+[2026-01-21 17:24:38,192] INFO app :: [8c25378a] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:39,475] INFO app :: [8c25378a] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.282s)
+[2026-01-21 17:24:41,196] INFO app :: [89071840] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:42,461] INFO app :: [89071840] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.265s)
+[2026-01-21 17:24:44,191] INFO app :: [2e0a2f14] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:45,468] INFO app :: [2e0a2f14] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.277s)
+[2026-01-21 17:24:47,194] INFO app :: [68e944fc] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:48,424] INFO app :: [68e944fc] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.229s)
+[2026-01-21 17:24:50,199] INFO app :: [45e8ba42] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:51,446] INFO app :: [45e8ba42] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.246s)
+[2026-01-21 17:24:53,198] INFO app :: [b849f9d5] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:54,425] INFO app :: [b849f9d5] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.227s)
+[2026-01-21 17:24:56,195] INFO app :: [bdbce5ca] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:24:57,467] INFO app :: [bdbce5ca] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.272s)
+[2026-01-21 17:24:59,199] INFO app :: [9094cb29] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:25:00,446] INFO app :: [9094cb29] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.248s)
+[2026-01-21 17:25:02,193] INFO app :: [d8e2e037] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:25:03,446] INFO app :: [d8e2e037] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.253s)
+[2026-01-21 17:25:10,189] INFO app :: [a7647483] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:25:11,496] INFO app :: [a7647483] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.306s)
+[2026-01-21 17:26:10,197] INFO app :: [77bb3500] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:26:11,516] INFO app :: [77bb3500] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.319s)
+[2026-01-21 17:27:10,197] INFO app :: [802c5be2] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:27:11,515] INFO app :: [802c5be2] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.319s)
+[2026-01-21 17:28:10,204] INFO app :: [401bfed3] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:28:11,474] INFO app :: [401bfed3] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.270s)
+[2026-01-21 17:29:10,196] INFO app :: [0bf6f43c] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:29:11,464] INFO app :: [0bf6f43c] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.268s)
+[2026-01-21 17:30:10,204] INFO app :: [6e5fbaf4] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:30:11,470] INFO app :: [6e5fbaf4] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.267s)
+[2026-01-21 17:31:10,202] INFO app :: [d8a3331d] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:31:11,490] INFO app :: [d8a3331d] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.289s)
+[2026-01-21 17:32:10,201] INFO app :: [f11b7043] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:32:11,462] INFO app :: [f11b7043] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.261s)
+[2026-01-21 17:33:10,204] INFO app :: [adc0be8f] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:33:11,083] INFO app :: [adc0be8f] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.879s)
+[2026-01-21 17:34:10,203] INFO app :: [2b01fee3] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:34:11,156] INFO app :: [2b01fee3] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.953s)
+[2026-01-21 17:35:10,202] INFO app :: [b571dc3a] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:35:11,160] INFO app :: [b571dc3a] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.958s)
+[2026-01-21 17:36:10,197] INFO app :: [fc8367f1] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:36:11,117] INFO app :: [fc8367f1] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.920s)
+[2026-01-21 17:36:29,982] INFO app :: [a8ad6563] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:36:30,873] INFO app :: [a8ad6563] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.891s)
+[2026-01-21 17:36:32,216] INFO app :: [fe4508ae] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:36:33,112] INFO app :: [fe4508ae] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.896s)
+[2026-01-21 17:36:35,209] INFO app :: [301be1fd] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:36:36,084] INFO app :: [301be1fd] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.875s)
+[2026-01-21 17:36:38,206] INFO app :: [a59f94a3] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:36:39,217] INFO app :: [a59f94a3] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.011s)
+[2026-01-21 17:36:41,198] INFO app :: [e8e1d014] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:36:42,063] INFO app :: [e8e1d014] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.864s)
+[2026-01-21 17:36:44,203] INFO app :: [4ef1601c] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:36:45,081] INFO app :: [4ef1601c] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.879s)
+[2026-01-21 17:36:47,194] INFO app :: [18c16ce7] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:36:48,047] INFO app :: [18c16ce7] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.853s)
+[2026-01-21 17:36:50,197] INFO app :: [90aea252] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:36:51,027] INFO app :: [90aea252] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.830s)
+[2026-01-21 17:36:53,205] INFO app :: [911b4b1b] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:36:54,082] INFO app :: [911b4b1b] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.877s)
+[2026-01-21 17:36:56,200] INFO app :: [4f4e99d0] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:36:57,058] INFO app :: [4f4e99d0] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.858s)
+[2026-01-21 17:36:59,200] INFO app :: [60527ed3] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:37:00,037] INFO app :: [60527ed3] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.837s)
+[2026-01-21 17:37:02,203] INFO app :: [9db77c1c] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:37:03,040] INFO app :: [9db77c1c] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.836s)
+[2026-01-21 17:37:05,210] INFO app :: [28359e45] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:37:06,062] INFO app :: [28359e45] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.852s)
+[2026-01-21 17:37:08,216] INFO app :: [65390800] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:37:09,064] INFO app :: [65390800] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.848s)
+[2026-01-21 17:37:11,202] INFO app :: [a87ac7de] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:37:12,084] INFO app :: [a87ac7de] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.881s)
+[2026-01-21 17:37:14,209] INFO app :: [7e4998ab] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:37:15,063] INFO app :: [7e4998ab] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.855s)
+[2026-01-21 17:37:17,206] INFO app :: [765d23f3] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:37:18,033] INFO app :: [765d23f3] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.827s)
+[2026-01-21 17:37:20,195] INFO app :: [4eccbcdc] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:37:21,052] INFO app :: [4eccbcdc] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.856s)
+[2026-01-21 17:37:23,203] INFO app :: [3c730b27] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:37:24,046] INFO app :: [3c730b27] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.843s)
+[2026-01-21 17:37:26,207] INFO app :: [b9e11cec] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:37:27,085] INFO app :: [b9e11cec] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.878s)
+[2026-01-21 17:37:29,204] INFO app :: [c4d67ce9] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:37:30,066] INFO app :: [c4d67ce9] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.862s)
+[2026-01-21 17:38:10,205] INFO app :: [ac1093c4] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:38:11,100] INFO app :: [ac1093c4] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.895s)
+[2026-01-21 17:39:10,211] INFO app :: [46c75d0f] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:39:11,082] INFO app :: [46c75d0f] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.871s)
+[2026-01-21 17:40:10,204] INFO app :: [4e572e6c] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:40:11,093] INFO app :: [4e572e6c] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.889s)
+[2026-01-21 17:41:10,211] INFO app :: [efb73d83] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:41:11,061] INFO app :: [efb73d83] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.849s)
+[2026-01-21 17:42:10,207] INFO app :: [8b4174f9] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:42:11,079] INFO app :: [8b4174f9] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.872s)
+[2026-01-21 17:43:10,207] INFO app :: [0b71f412] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:43:11,064] INFO app :: [0b71f412] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.857s)
+[2026-01-21 17:44:10,203] INFO app :: [69a107ad] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:44:11,102] INFO app :: [69a107ad] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.899s)
+[2026-01-21 17:45:10,208] INFO app :: [6557fb95] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:45:11,189] INFO app :: [6557fb95] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.981s)
+[2026-01-21 17:46:10,200] INFO app :: [eb65c9fb] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:46:11,075] INFO app :: [eb65c9fb] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.874s)
+[2026-01-21 17:47:10,212] INFO app :: [83e9b467] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:47:11,154] INFO app :: [83e9b467] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.942s)
+[2026-01-21 17:48:10,209] INFO app :: [e738939f] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:48:11,102] INFO app :: [e738939f] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.893s)
+[2026-01-21 17:49:10,205] INFO app :: [03167ad0] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:49:11,138] INFO app :: [03167ad0] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.934s)
+[2026-01-21 17:50:10,245] INFO app :: [ab3a338b] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:50:11,196] INFO app :: [ab3a338b] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.951s)
+[2026-01-21 17:51:10,217] INFO app :: [aee91813] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:51:11,138] INFO app :: [aee91813] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.922s)
+[2026-01-21 17:52:10,208] INFO app :: [08f7651e] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:52:11,720] INFO app :: [08f7651e] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.513s)
+[2026-01-21 17:53:10,207] INFO app :: [73aa40f8] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:53:11,068] INFO app :: [73aa40f8] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.861s)
+[2026-01-21 17:54:10,214] INFO app :: [e7ad2602] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:54:11,259] INFO app :: [e7ad2602] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.045s)
+[2026-01-21 17:55:10,222] INFO app :: [30586517] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:55:11,165] INFO app :: [30586517] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.944s)
+[2026-01-21 17:56:10,205] INFO app :: [6def3a4f] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:56:11,070] INFO app :: [6def3a4f] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.865s)
+[2026-01-21 17:57:10,207] INFO app :: [c8f1ff02] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:57:11,085] INFO app :: [c8f1ff02] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.879s)
+[2026-01-21 17:58:10,215] INFO app :: [fdb89c95] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:58:11,121] INFO app :: [fdb89c95] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.906s)
+[2026-01-21 17:59:10,220] INFO app :: [55b939eb] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 17:59:11,092] INFO app :: [55b939eb] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.872s)
+[2026-01-21 18:00:10,214] INFO app :: [81c00934] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 18:00:11,104] INFO app :: [81c00934] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.890s)
+[2026-01-21 18:01:10,206] INFO app :: [52b2ad2f] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 18:01:11,076] INFO app :: [52b2ad2f] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.869s)
+[2026-01-21 18:02:10,220] INFO app :: [05bc18a4] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 18:02:11,106] INFO app :: [05bc18a4] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.886s)
+[2026-01-21 18:03:10,216] INFO app :: [7447425a] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 18:03:11,109] INFO app :: [7447425a] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (0.893s)
+[2026-01-21 18:04:10,209] INFO app :: [108c8a8f] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 18:04:11,531] INFO app :: [108c8a8f] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.322s)
+[2026-01-21 18:05:10,215] INFO app :: [f4b8beb6] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 18:05:11,500] INFO app :: [f4b8beb6] ⇠ 202 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.284s)
+[2026-01-21 18:06:10,219] INFO app :: [58bccfe1] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 18:06:11,504] INFO app :: [58bccfe1] ⇠ 200 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.284s)
+[2026-01-21 18:06:11,519] INFO app :: [14cbed8a] ⇢ GET /results/ed49b8bc864642979ca7c2ffa34b2492
+[2026-01-21 18:06:11,537] INFO app :: [14cbed8a] ⇠ 200 GET /results/ed49b8bc864642979ca7c2ffa34b2492 (0.018s)
+[2026-01-21 18:06:11,559] INFO app :: [b18c31e5] ⇢ GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status
+[2026-01-21 18:06:12,902] INFO app :: [b18c31e5] ⇠ 200 GET /api/process/ed49b8bc864642979ca7c2ffa34b2492/status (1.343s)
+[2026-01-22 15:22:37,080] INFO app :: ✔ routes.py を読み込みます
+[2026-01-22 15:22:38,169] INFO app :: ✔ setup_routes 実行完了
+[2026-01-22 15:22:38,169] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2026-01-22 15:22:38,169] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2026-01-22 15:22:38,169] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2026-01-22 15:22:38,169] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2026-01-22 15:22:38,242] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2026-01-22 15:22:45,868] INFO app :: [062f5ddf] ⇢ GET /
+[2026-01-22 15:22:45,881] INFO app :: [062f5ddf] ⇠ 200 GET / (0.014s)
+[2026-01-22 15:22:45,916] INFO app :: [51cf51eb] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2026-01-22 15:22:46,105] INFO app :: [51cf51eb] ⇠ 304 GET /static/images/gijiro-logo-professional.svg (0.189s)
+[2026-01-22 15:22:46,166] INFO app :: [9eaaf308] ⇢ GET /favicon.ico
+[2026-01-22 15:22:46,183] INFO app :: [9eaaf308] ⇠ 404 GET /favicon.ico (0.018s)
+[2026-01-22 15:25:03,047] INFO app :: [ca830932] ⇢ GET /api/blob/sas
+[2026-01-22 15:25:03,047] INFO app :: [ca830932] ⇠ 200 GET /api/blob/sas (0.000s)
+[2026-01-22 15:25:04,926] INFO app :: [5b885750] ⇢ GET /api/blob/sas
+[2026-01-22 15:25:04,928] INFO app :: [5b885750] ⇠ 200 GET /api/blob/sas (0.002s)
+[2026-01-22 15:25:05,198] INFO app :: [4f3dc68d] ⇢ POST /api/process
+[2026-01-22 15:25:06,645] INFO app :: [4f3dc68d] ⇠ 202 POST /api/process (1.447s)
+[2026-01-22 15:25:09,661] INFO app :: [4b72c0a6] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:11,007] INFO app :: [4b72c0a6] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.346s)
+[2026-01-22 15:25:12,657] INFO app :: [6b7991c1] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:13,943] INFO app :: [6b7991c1] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.286s)
+[2026-01-22 15:25:15,658] INFO app :: [86e15507] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:16,945] INFO app :: [86e15507] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.287s)
+[2026-01-22 15:25:18,659] INFO app :: [012f94b2] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:19,949] INFO app :: [012f94b2] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.289s)
+[2026-01-22 15:25:21,662] INFO app :: [e76c05d1] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:22,963] INFO app :: [e76c05d1] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.300s)
+[2026-01-22 15:25:24,658] INFO app :: [c405d7e6] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:25,923] INFO app :: [c405d7e6] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.265s)
+[2026-01-22 15:25:27,659] INFO app :: [ab7bac1e] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:28,896] INFO app :: [ab7bac1e] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.237s)
+[2026-01-22 15:25:30,658] INFO app :: [971e76df] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:31,859] INFO app :: [971e76df] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.200s)
+[2026-01-22 15:25:33,662] INFO app :: [50333758] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:34,993] INFO app :: [50333758] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.331s)
+[2026-01-22 15:25:36,658] INFO app :: [536b3a5b] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:37,910] INFO app :: [536b3a5b] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.252s)
+[2026-01-22 15:25:39,656] INFO app :: [cce44a35] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:40,908] INFO app :: [cce44a35] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.252s)
+[2026-01-22 15:25:42,659] INFO app :: [c2921f2f] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:43,940] INFO app :: [c2921f2f] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.281s)
+[2026-01-22 15:25:45,658] INFO app :: [93b0c4c9] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:46,921] INFO app :: [93b0c4c9] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.262s)
+[2026-01-22 15:25:48,657] INFO app :: [6f545e54] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:49,946] INFO app :: [6f545e54] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.290s)
+[2026-01-22 15:25:51,658] INFO app :: [4dfdc612] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:52,985] INFO app :: [4dfdc612] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.327s)
+[2026-01-22 15:25:54,661] INFO app :: [01472784] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:55,924] INFO app :: [01472784] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.264s)
+[2026-01-22 15:25:57,657] INFO app :: [cb938384] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:25:58,926] INFO app :: [cb938384] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.269s)
+[2026-01-22 15:26:00,657] INFO app :: [d31d4269] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:01,957] INFO app :: [d31d4269] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.300s)
+[2026-01-22 15:26:03,658] INFO app :: [dacd2dab] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:04,958] INFO app :: [dacd2dab] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.299s)
+[2026-01-22 15:26:06,661] INFO app :: [97dca3ca] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:07,941] INFO app :: [97dca3ca] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.280s)
+[2026-01-22 15:26:09,661] INFO app :: [38f6bc6d] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:10,960] INFO app :: [38f6bc6d] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.299s)
+[2026-01-22 15:26:12,657] INFO app :: [da08b88d] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:13,973] INFO app :: [da08b88d] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.316s)
+[2026-01-22 15:26:15,667] INFO app :: [fc12a7b5] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:17,856] INFO app :: [fc12a7b5] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (2.189s)
+[2026-01-22 15:26:18,659] INFO app :: [040f8280] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:19,941] INFO app :: [040f8280] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.282s)
+[2026-01-22 15:26:21,660] INFO app :: [34e5a96b] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:22,957] INFO app :: [34e5a96b] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.296s)
+[2026-01-22 15:26:24,660] INFO app :: [eeacbbb0] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:25,983] INFO app :: [eeacbbb0] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.322s)
+[2026-01-22 15:26:27,660] INFO app :: [e3d2542c] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:28,951] INFO app :: [e3d2542c] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.291s)
+[2026-01-22 15:26:30,660] INFO app :: [50daf374] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:31,991] INFO app :: [50daf374] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.332s)
+[2026-01-22 15:26:33,660] INFO app :: [4883cec4] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:34,950] INFO app :: [4883cec4] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.291s)
+[2026-01-22 15:26:36,657] INFO app :: [b23830e1] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:37,966] INFO app :: [b23830e1] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.310s)
+[2026-01-22 15:26:39,653] INFO app :: [319e67e6] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:40,993] INFO app :: [319e67e6] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.340s)
+[2026-01-22 15:26:42,658] INFO app :: [9d614c6b] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:43,993] INFO app :: [9d614c6b] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.336s)
+[2026-01-22 15:26:45,664] INFO app :: [ea468292] ⇢ GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status
+[2026-01-22 15:26:46,938] INFO app :: [ea468292] ⇠ 202 GET /api/process/3a23239d14dd433a9ae04507b859e2c8/status (1.274s)
+[2026-01-22 15:27:46,363] INFO app :: ✔ routes.py を読み込みます
+[2026-01-22 15:27:47,307] INFO app :: ✔ setup_routes 実行完了
+[2026-01-22 15:27:47,307] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2026-01-22 15:27:47,307] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2026-01-22 15:27:47,307] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2026-01-22 15:27:47,307] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2026-01-22 15:27:47,328] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2026-01-29 17:03:04,230] WARNING app :: [WARNING] routes.py の読み込みに失敗しました: No module named 'azure.storage.queue'
+[2026-01-29 17:03:04,230] INFO app :: === URL MAP ===
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+[2026-01-29 17:03:04,230] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2026-01-29 17:03:04,230] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2026-01-29 17:03:04,230] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2026-01-29 17:03:04,314] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2026-01-29 17:03:38,337] INFO app :: ✔ routes.py を読み込みます
+[2026-01-29 17:03:39,285] INFO app :: ✔ setup_routes 実行完了
+[2026-01-29 17:03:39,285] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2026-01-29 17:03:39,285] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2026-01-29 17:03:39,285] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2026-01-29 17:03:39,285] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2026-01-29 17:03:39,358] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2026-01-29 17:04:00,726] INFO app :: [4f954d4c] ⇢ GET /
+[2026-01-29 17:04:00,737] INFO app :: [4f954d4c] ⇠ 200 GET / (0.012s)
+[2026-01-29 17:04:00,777] INFO app :: [b4979545] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2026-01-29 17:04:00,860] INFO app :: [b4979545] ⇠ 200 GET /static/images/gijiro-logo-professional.svg (0.083s)
+[2026-01-29 17:04:00,921] INFO app :: [0066a792] ⇢ GET /favicon.ico
+[2026-01-29 17:04:00,938] INFO app :: [0066a792] ⇠ 404 GET /favicon.ico (0.017s)
+[2026-01-29 17:06:05,445] INFO app :: [ee38e657] ⇢ GET /api/blob/sas
+[2026-01-29 17:06:05,445] INFO app :: [ee38e657] ⇠ 200 GET /api/blob/sas (0.000s)
+[2026-01-29 17:06:07,279] INFO app :: [6245c80f] ⇢ GET /api/blob/sas
+[2026-01-29 17:06:07,279] INFO app :: [6245c80f] ⇠ 200 GET /api/blob/sas (0.000s)
+[2026-01-29 17:06:07,581] INFO app :: [b02ba4bb] ⇢ POST /api/process
+[2026-01-29 17:06:09,102] INFO app :: [b02ba4bb] ⇠ 202 POST /api/process (1.522s)
+[2026-01-29 17:06:12,123] INFO app :: [da62454a] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:13,380] INFO app :: [da62454a] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.258s)
+[2026-01-29 17:06:15,125] INFO app :: [a46c7742] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:16,412] INFO app :: [a46c7742] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.288s)
+[2026-01-29 17:06:18,115] INFO app :: [124775f8] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:19,390] INFO app :: [124775f8] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.274s)
+[2026-01-29 17:06:21,118] INFO app :: [3d3aba81] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:22,363] INFO app :: [3d3aba81] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.244s)
+[2026-01-29 17:06:24,119] INFO app :: [b065cafd] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:25,396] INFO app :: [b065cafd] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.278s)
+[2026-01-29 17:06:27,114] INFO app :: [ed5f697e] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:28,397] INFO app :: [ed5f697e] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.283s)
+[2026-01-29 17:06:30,119] INFO app :: [2bab65b2] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:31,346] INFO app :: [2bab65b2] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.227s)
+[2026-01-29 17:06:33,124] INFO app :: [f714977b] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:34,396] INFO app :: [f714977b] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.273s)
+[2026-01-29 17:06:36,119] INFO app :: [047f018f] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:37,415] INFO app :: [047f018f] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.296s)
+[2026-01-29 17:06:39,122] INFO app :: [a5c7635d] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:40,448] INFO app :: [a5c7635d] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.327s)
+[2026-01-29 17:06:42,115] INFO app :: [d98733fb] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:43,387] INFO app :: [d98733fb] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.272s)
+[2026-01-29 17:06:45,131] INFO app :: [37cefe49] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:46,414] INFO app :: [37cefe49] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.283s)
+[2026-01-29 17:06:48,119] INFO app :: [d386b9b2] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:49,403] INFO app :: [d386b9b2] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.284s)
+[2026-01-29 17:06:51,115] INFO app :: [6e399930] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:52,396] INFO app :: [6e399930] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.282s)
+[2026-01-29 17:06:54,697] INFO app :: [8576d739] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:55,997] INFO app :: [8576d739] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.300s)
+[2026-01-29 17:06:57,697] INFO app :: [1036e797] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:06:59,008] INFO app :: [1036e797] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.311s)
+[2026-01-29 17:07:00,689] INFO app :: [d0fc9c06] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:01,951] INFO app :: [d0fc9c06] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.262s)
+[2026-01-29 17:07:03,694] INFO app :: [47566558] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:04,975] INFO app :: [47566558] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.280s)
+[2026-01-29 17:07:06,683] INFO app :: [39b96be1] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:08,082] INFO app :: [39b96be1] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.398s)
+[2026-01-29 17:07:09,697] INFO app :: [44fe77c5] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:10,999] INFO app :: [44fe77c5] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.303s)
+[2026-01-29 17:07:12,700] INFO app :: [65bbac16] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:14,019] INFO app :: [65bbac16] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.319s)
+[2026-01-29 17:07:15,697] INFO app :: [037bcab2] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:16,991] INFO app :: [037bcab2] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.294s)
+[2026-01-29 17:07:18,696] INFO app :: [409a9a46] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:19,952] INFO app :: [409a9a46] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.256s)
+[2026-01-29 17:07:21,696] INFO app :: [cddc33bc] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:22,954] INFO app :: [cddc33bc] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.259s)
+[2026-01-29 17:07:24,691] INFO app :: [4a93668e] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:25,962] INFO app :: [4a93668e] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.271s)
+[2026-01-29 17:07:27,689] INFO app :: [a27cde1e] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:28,964] INFO app :: [a27cde1e] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.275s)
+[2026-01-29 17:07:30,692] INFO app :: [2b6a7bf7] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:31,967] INFO app :: [2b6a7bf7] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.275s)
+[2026-01-29 17:07:33,693] INFO app :: [ddce447f] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:34,947] INFO app :: [ddce447f] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.253s)
+[2026-01-29 17:07:36,688] INFO app :: [2c2d797f] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:37,963] INFO app :: [2c2d797f] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.275s)
+[2026-01-29 17:07:39,692] INFO app :: [315009fa] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:40,961] INFO app :: [315009fa] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.269s)
+[2026-01-29 17:07:42,687] INFO app :: [d56fb536] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:43,980] INFO app :: [d56fb536] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.293s)
+[2026-01-29 17:07:45,698] INFO app :: [90a5508c] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:47,039] INFO app :: [90a5508c] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.341s)
+[2026-01-29 17:07:48,701] INFO app :: [abd329d0] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:49,999] INFO app :: [abd329d0] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.299s)
+[2026-01-29 17:07:51,699] INFO app :: [933c0441] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:07:52,947] INFO app :: [933c0441] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.248s)
+[2026-01-29 17:08:46,702] INFO app :: [dc124ae2] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:08:47,979] INFO app :: [dc124ae2] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.277s)
+[2026-01-29 17:09:46,699] INFO app :: [9f8943eb] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:09:47,951] INFO app :: [9f8943eb] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.251s)
+[2026-01-29 17:10:46,702] INFO app :: [fad14bb0] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:10:48,005] INFO app :: [fad14bb0] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.304s)
+[2026-01-29 17:11:46,700] INFO app :: [cf36163f] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:11:47,931] INFO app :: [cf36163f] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.231s)
+[2026-01-29 17:12:46,701] INFO app :: [c9c49322] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:12:48,003] INFO app :: [c9c49322] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.302s)
+[2026-01-29 17:13:46,697] INFO app :: [32da3726] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:13:47,968] INFO app :: [32da3726] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.271s)
+[2026-01-29 17:14:46,705] INFO app :: [74d40263] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:14:47,845] INFO app :: [74d40263] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.141s)
+[2026-01-29 17:15:46,703] INFO app :: [12a1e860] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:15:47,537] INFO app :: [12a1e860] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (0.834s)
+[2026-01-29 17:15:52,484] INFO app :: ✔ routes.py を読み込みます
+[2026-01-29 17:15:53,402] INFO app :: ✔ setup_routes 実行完了
+[2026-01-29 17:15:53,402] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2026-01-29 17:15:53,402] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2026-01-29 17:15:53,404] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2026-01-29 17:15:53,404] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2026-01-29 17:15:53,411] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2026-01-29 17:16:46,713] INFO app :: [16a5bfc0] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:16:48,038] INFO app :: [16a5bfc0] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.325s)
+[2026-01-29 17:17:46,708] INFO app :: [09b2c910] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:17:48,008] INFO app :: [09b2c910] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.301s)
+[2026-01-29 17:18:46,699] INFO app :: [d5598586] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:18:47,633] INFO app :: [d5598586] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (0.934s)
+[2026-01-29 17:19:46,716] INFO app :: [00ac9115] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:19:48,004] INFO app :: [00ac9115] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.288s)
+[2026-01-29 17:20:46,706] INFO app :: [190328fd] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:20:47,972] INFO app :: [190328fd] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.267s)
+[2026-01-29 17:21:46,701] INFO app :: [f65e09c2] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:21:47,961] INFO app :: [f65e09c2] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.260s)
+[2026-01-29 17:22:46,704] INFO app :: [f3d92dd1] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:22:47,605] INFO app :: [f3d92dd1] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (0.901s)
+[2026-01-29 17:23:46,705] INFO app :: [e0de4f3e] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:23:47,922] INFO app :: [e0de4f3e] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.217s)
+[2026-01-29 17:24:46,708] INFO app :: [1ef0dbe0] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:24:47,987] INFO app :: [1ef0dbe0] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.279s)
+[2026-01-29 17:24:53,919] INFO app :: [4c97d23a] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:24:55,206] INFO app :: [4c97d23a] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.287s)
+[2026-01-29 17:24:55,206] INFO app :: [993e7613] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:24:56,468] INFO app :: [993e7613] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.262s)
+[2026-01-29 17:24:57,140] INFO app :: [bc5acdb8] ⇢ GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status
+[2026-01-29 17:24:58,389] INFO app :: [bc5acdb8] ⇠ 202 GET /api/process/625dbd38a1ac4ebd92ee271eaaf92fef/status (1.250s)
+[2026-01-30 15:14:58,444] INFO app :: ✔ routes.py を読み込みます
+[2026-01-30 15:14:58,998] INFO app :: ✔ setup_routes 実行完了
+[2026-01-30 15:14:58,999] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2026-01-30 15:14:59,001] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2026-01-30 15:14:59,001] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2026-01-30 15:14:59,002] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2026-01-30 15:14:59,054] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2026-01-30 15:15:42,790] INFO app :: ✔ routes.py を読み込みます
+[2026-01-30 15:15:43,658] INFO app :: ✔ setup_routes 実行完了
+[2026-01-30 15:15:43,658] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2026-01-30 15:15:43,658] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2026-01-30 15:15:43,665] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2026-01-30 15:15:43,665] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2026-01-30 15:15:43,696] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
+[2026-01-30 15:16:34,565] INFO app :: [d601f3df] ⇢ GET /
+[2026-01-30 15:16:34,588] INFO app :: [d601f3df] ⇠ 200 GET / (0.022s)
+[2026-01-30 15:16:34,655] INFO app :: [fb8d4350] ⇢ GET /static/images/gijiro-logo-professional.svg
+[2026-01-30 15:16:34,774] INFO app :: [fb8d4350] ⇠ 200 GET /static/images/gijiro-logo-professional.svg (0.119s)
+[2026-01-30 15:16:34,834] INFO app :: [ca8a1db3] ⇢ GET /favicon.ico
+[2026-01-30 15:16:34,847] INFO app :: [ca8a1db3] ⇠ 404 GET /favicon.ico (0.013s)
+[2026-01-30 15:23:49,694] INFO app :: ✔ routes.py を読み込みます
+[2026-01-30 15:23:50,622] INFO app :: ✔ setup_routes 実行完了
+[2026-01-30 15:23:50,622] INFO app :: === URL MAP ===
+api_blob_sas                 GET,HEAD,OPTIONS   /api/blob/sas
+api_process                  OPTIONS,POST       /api/process
+api_status                   GET,HEAD,OPTIONS   /api/process/<job_id>/status
+api_wait_for_result          GET,HEAD,OPTIONS   /api/process/<job_id>/wait
+azure_ad_callback            GET,HEAD,OPTIONS,POST /api/auth/callback/azure-ad
+delete_keyword               OPTIONS,POST       /delete_keyword
+edit_keyword                 GET,HEAD,OPTIONS   /edit_keyword
+error_page                   GET,HEAD,OPTIONS   /error
+health                       GET,HEAD,OPTIONS   /health
+healthz                      GET,HEAD,OPTIONS   /healthz
+index                        GET,HEAD,OPTIONS   /
+keywords_page                GET,HEAD,OPTIONS   /keywords
+register_keyword             OPTIONS,POST       /register_keyword
+result_page                  GET,HEAD,OPTIONS   /results/<job_id>
+static                       GET,HEAD,OPTIONS   /static/<path:filename>
+update_keyword               OPTIONS,POST       /update_keyword
+[2026-01-30 15:23:50,623] INFO app :: [INFO] FFmpeg:  C:\Users\021213\gijiro3\ffmpeg\bin\win\ffmpeg.exe
+[2026-01-30 15:23:50,623] INFO app :: [INFO] FFprobe: C:\Users\021213\gijiro3\ffmpeg\bin\win\ffprobe.exe
+[2026-01-30 15:23:50,623] INFO app :: [INFO] USE_BODY_UPLOAD=False BODY_UPLOAD_MAX_BYTES=188743680
+[2026-01-30 15:23:50,635] INFO app :: [INFO] Starting server on http://0.0.0.0:8000
