@@ -191,37 +191,49 @@ def setup_routes(app):
         )
 
     # ─────────────────────────────────────────
-    # キーワード管理
+    # キーワード管理（★メール対応）
     # ─────────────────────────────────────────
     @app.route("/keywords")
     def keywords_page():
-        return render_template("keywords.html", keywords=get_all_keywords())
+        email = _get_user_email()
+        logger.info(f"[KEYWORD] keywords_page email={email}")
+        return render_template("keywords.html", keywords=get_all_keywords(email))
 
     @app.route("/register_keyword", methods=["POST"])
     def register_keyword():
+        email = _get_user_email()
+        logger.info(f"[KEYWORD] register_keyword email={email}")
         add_keyword(
             request.form.get("reading"),
             request.form.get("wrong_examples"),
             request.form.get("keyword"),
+            email=email,
         )
         return redirect("/keywords")
 
     @app.route("/delete_keyword", methods=["POST"])
     def delete_keyword():
-        delete_keyword_by_id(request.form.get("id"))
+        email = _get_user_email()
+        logger.info(f"[KEYWORD] delete_keyword email={email}")
+        delete_keyword_by_id(request.form.get("id"), email=email)
         return redirect("/keywords")
 
     @app.route("/edit_keyword")
     def edit_keyword():
-        return render_template("edit_keyword.html", keyword=get_keyword_by_id(request.args.get("id")))
+        email = _get_user_email()
+        logger.info(f"[KEYWORD] edit_keyword email={email}")
+        return render_template("edit_keyword.html", keyword=get_keyword_by_id(request.args.get("id"), email=email))
 
     @app.route("/update_keyword", methods=["POST"])
     def update_keyword():
+        email = _get_user_email()
+        logger.info(f"[KEYWORD] update_keyword email={email}")
         update_keyword_by_id(
             request.form.get("id"),
             request.form.get("reading"),
             request.form.get("wrong_examples"),
             request.form.get("keyword"),
+            email=email,
         )
         return redirect("/keywords")
 
