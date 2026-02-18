@@ -2,9 +2,6 @@
 from __future__ import annotations
 
 from flask import request, render_template, jsonify, redirect, send_file, abort, Response
-
-
-from flask import request, render_template, jsonify, redirect, send_file, abort, Response
 import logging
 import os
 import time
@@ -28,7 +25,6 @@ from kowake import (
 from config import MAX_CONTENT_LENGTH_BYTES
 
 
-# 環境変数から許可IPリストを取得（カンマ区切り、CIDR対応）
 ALLOWED_DOWNLOAD_IPS = [
     ip.strip()
     for ip in os.getenv("ALLOWED_DOWNLOAD_IPS", "").split(",")
@@ -49,6 +45,7 @@ def ip_allowed(client_ip: str, allowed_list: list[str]) -> bool:
         except ValueError:
             continue
     return False
+
 
 def setup_routes(app):
     logger = logging.getLogger("routes")
@@ -77,19 +74,13 @@ def setup_routes(app):
             if not ip_allowed(client_ip, ALLOWED_DOWNLOAD_IPS):
                 abort(403, "社外からのダウンロードは許可されていません")
 
-    # キーワードDBの初期ロード
     load_keywords_from_file()
 
-    # ─────────────────────────────────────────
-    # 基本ページ
-    # ─────────────────────────────────────────
     @app.route("/")
     def index():
         logger.info("✔ / にアクセスされました")
-        # ★ ここに max_bytes を追加するだけ（サーバー側の挙動は不変）
         return render_template("index.html", max_bytes=MAX_CONTENT_LENGTH_BYTES)
 
-    # ─── ヘルスチェック（/health と /healthz を両方用意） ───
     @app.route("/health", methods=["GET"])
     def health():
         return jsonify({"status": "OK"}), 200
@@ -98,12 +89,10 @@ def setup_routes(app):
     def healthz():
         return jsonify({"status": "OK"}), 200
 
-    # ─── 結果ページ（静的テンプレート表示） ─────────────
     @app.route("/results/<job_id>", methods=["GET"])
     def result_page(job_id):
         return render_template("result.html", job_id=job_id)
 
-    # ─── Azure AD コールバック（ダミー） ───────────────
     @app.route("/api/auth/callback/azure-ad", methods=["GET", "POST"])
     def azure_ad_callback():
         try:
@@ -128,7 +117,6 @@ def setup_routes(app):
             logger.error(f"エラー発生: {e}")
             return jsonify({"error": f"エラー発生: {e}"}), 500
 
-    # ─── Blob SAS 発行 ────────────────────────
     @app.route("/api/blob/sas", methods=["GET"])
     def api_blob_sas():
         blob_name = request.args.get("name")
@@ -136,7 +124,6 @@ def setup_routes(app):
             return jsonify({"error": "name parameter is required"}), 400
         return jsonify(generate_upload_sas(blob_name))
 
-    # ─── 非同期ジョブ登録 ─────────────────────
     @app.route("/api/process", methods=["POST"])
     def api_process():
         data = request.get_json(silent=True) or {}
@@ -151,7 +138,6 @@ def setup_routes(app):
         logger.info(f"✔ ジョブ登録完了: job_id={job_id}")
         return jsonify({"jobId": job_id}), 202
 
-    # ─── ステータス確認 ───────────────────────
     @app.route("/api/process/<job_id>/status", methods=["GET"])
     def api_status(job_id):
         result_blob = f"processed/{job_id}.docx"
@@ -169,7 +155,6 @@ def setup_routes(app):
             logger.error(f"ステータス確認中にエラー: {e}")
             return jsonify({"error": str(e)}), 500
 
-    # ─── 同期で待つ（必要なら利用） ─────────────────
     @app.route("/api/process/<job_id>/wait", methods=["GET"])
     def api_wait_for_result(job_id):
         max_wait_sec = 600
@@ -196,12 +181,10 @@ def setup_routes(app):
 
         return jsonify({"error": "処理が完了しませんでした"}), 504
 
-    
-  # ─── キーワード管理 ────────────────────────
     @app.route("/keywords", methods=["GET"])
     def keywords_page():
         keywords = get_all_keywords()
-        print(f"🟡 /keywords loaded = {len(keywords)}")  # ログ
+        print(f"🟡 /keywords loaded = {len(keywords)}")
         return render_template("keywords.html", keywords=keywords)
 
     @app.route("/register_keyword", methods=["POST"])
@@ -248,7 +231,6 @@ def setup_routes(app):
         update_keyword_by_id(keyword_id, reading, wrong_examples, keyword_text)
         return redirect("/keywords")
 
-    # ─── エラーページ描画（フロントからの /error?code=... に対応） ───
     @app.route("/error", methods=["GET"])
     def error_page():
         code = request.args.get("code", default=500, type=int)
@@ -269,7 +251,6 @@ def setup_routes(app):
             code,
         )
 
-    # ─── 共通エラーハンドラ（サーバー起因の未捕捉も UI 化） ───
     @app.errorhandler(404)
     def _h_404(e):
         logger.error(f"404 Not Found: {request.path}")
@@ -293,7 +274,7 @@ def setup_routes(app):
             path=request.path,
             now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         ), 413
-    
+
     @app.errorhandler(403)
     def _h_403(e):
         logger.error(f"403 Forbidden: {request.path}")
@@ -317,11 +298,9 @@ def setup_routes(app):
             path=request.path,
             now=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         ), 500
-    
-    # ─── プロキシダウンロード（Blob URL を隠す）─────────────
+
     @app.route("/api/process/<job_id>/download", methods=["GET"])
     def api_download(job_id):
-        """WEB中継方式: Blobから取得してそのままストリーム返却"""
         result_blob = f"processed/{job_id}.docx"
         try:
             blob_client = BlobClient.from_connection_string(
@@ -332,10 +311,7 @@ def setup_routes(app):
             if not blob_client.exists():
                 return jsonify({"error": "ファイルが見つかりません"}), 404
 
-            # ストリームで返却（メモリ効率良い）
             download_stream = blob_client.download_blob()
-            
-            from flask import Response
             return Response(
                 download_stream.chunks(),
                 mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -346,4 +322,3 @@ def setup_routes(app):
         except Exception as e:
             logger.error(f"ダウンロード中にエラー: {e}")
             return jsonify({"error": str(e)}), 500
-

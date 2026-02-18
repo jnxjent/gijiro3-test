@@ -17,7 +17,7 @@ from deepgram import Deepgram
 import openai
 
 from storage import upload_to_blob, download_blob
-
+import logging  # ← これが抜けている
 # ── ロガー設定 ─────────────────────────────────────────
 logger = logging.getLogger("ProcessAudioFunction")
 

@@ -29,10 +29,6 @@ QUEUE_NAME = os.getenv("AZURE_QUEUE_NAME", "audio-processing")
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("storage")
 
-# ───────────────────────────────────────────────
-# クライアント初期化（import時に落とさない）
-#  - ただし実行時に未設定なら明示的に例外
-# ───────────────────────────────────────────────
 transport = RequestsTransport(connection_timeout=600, read_timeout=600)
 
 blob_service_client: Optional[BlobServiceClient] = None
@@ -42,10 +38,6 @@ queue_client = None
 
 
 def _ensure_clients() -> None:
-    """
-    必要な環境変数が揃っているかチェックして、クライアントを初期化する。
-    import時点で落とさず、初回利用時にだけ初期化する。
-    """
     global blob_service_client, container_client, queue_service, queue_client
 
     if blob_service_client and container_client and queue_service and queue_client:
@@ -69,7 +61,6 @@ def _ensure_clients() -> None:
     logger.info(f"Initialized Queue client for: {QUEUE_NAME}")
 
 
-# ── ヘルパー関数 ────────────────────────────────
 def _normalize_blob_name(blob_name: str, *, force_audio_prefix: bool = False) -> str:
     if force_audio_prefix and not blob_name.startswith("audio/"):
         return f"audio/{blob_name}"
@@ -83,7 +74,6 @@ def _extract_blob_name_from_url(blob_url: str) -> str:
     return unquote(parts[1])
 
 
-# ── Public API ─────────────────────────────────
 def generate_blob_url(blob_name: str) -> str:
     if not AZ_ACCOUNT or not AZ_CONTAINER:
         raise RuntimeError("AZURE_STORAGE_ACCOUNT_NAME / AZURE_STORAGE_CONTAINER_NAME is not set.")
@@ -112,7 +102,6 @@ def upload_to_blob(
         logger.exception(f"UPLOAD FAILED: {blob_name}")
         raise
 
-    # 即時検証（たまに eventual 的に見えない時があるが、基本はここでOK）
     if not client.exists():
         raise RuntimeError(f"Blob {blob_name} not found right after upload!")
 
@@ -141,16 +130,10 @@ def download_blob(blob_name_or_url: str, download_path: str) -> str:
 
 
 def generate_upload_sas(blob_name: str, expiry_hours: int = 1) -> dict:
-    """
-    アップロード用 SAS を返す。
-    注意: connection string が account key を含まない（Managed Identity等）場合、
-         generate_blob_sas の account_key が取れず失敗するので明示的にエラーにする。
-    """
     _ensure_clients()
 
     blob_name = _normalize_blob_name(blob_name, force_audio_prefix=True)
 
-    # connection string 由来 credential から account_key を取得（キー無し構成なら None になり得る）
     account_key = getattr(getattr(blob_service_client, "credential", None), "account_key", None)
     if not account_key:
         raise RuntimeError(
@@ -169,17 +152,11 @@ def generate_upload_sas(blob_name: str, expiry_hours: int = 1) -> dict:
     url = generate_blob_url(blob_name)
     return {"uploadUrl": f"{url}?{sas_token}", "blobUrl": url}
 
+
 def enqueue_processing(blob_url: str, template_blob_url: str, job_id: str) -> None:
-    """
-    明示的に audio-processing キューへメッセージを送信。
-    - メッセージは JSON テキストで送信
-    - キューがなければ自動作成
-    - email があれば payload に含める（ユーザー別辞書適用用）
-    """
     _ensure_clients()
 
     try:
-        # キュー自動作成
         try:
             queue_client.create_queue()
         except ResourceExistsError:
@@ -189,9 +166,10 @@ def enqueue_processing(blob_url: str, template_blob_url: str, job_id: str) -> No
             "job_id": job_id,
             "blob_url": blob_url,
             "template_blob_url": template_blob_url,
-        })
+        }
+        payload = json.dumps(payload_obj)
         queue_client.send_message(payload)
-        logger.info(f"Enqueued job {job_id} to '{QUEUE_NAME}' email={email}")
+        logger.info(f"Enqueued job {job_id} to '{QUEUE_NAME}'")
 
     except HttpResponseError as e:
         logger.error(f"Failed to enqueue job {job_id}: {e}", exc_info=True)
