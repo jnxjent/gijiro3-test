@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from flask import request, render_template, jsonify, redirect, send_file, abort, Response
-from __future__ import annotations
+
 
 from flask import request, render_template, jsonify, redirect, send_file, abort, Response
 import logging
