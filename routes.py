@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # 確実上書き用routes.py
+=======
+# 最終デプロイ用routes.py
+>>>>>>> 126ff47 (feat: propagate email for personal keyword dictionary)
 from __future__ import annotations
 
 from flask import request, render_template, jsonify, redirect, send_file, abort, Response
