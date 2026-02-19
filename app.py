@@ -10,15 +10,21 @@ app.py – Flask エントリポイント（最小修正版）
 import os
 import platform
 import logging
-from dotenv import load_dotenv
+
+# ==== .env 読み込み（python-dotenv が無くても落とさない）====
+try:
+    from dotenv import load_dotenv  # type: ignore
+    load_dotenv()
+except Exception:
+    # App Service / Functions 環境では .env が無い＆dotenv が無いことがあるため、
+    # 起動を優先して握りつぶす（環境変数は App Settings 側から入る）
+    pass
+
 from pydub import AudioSegment
 from flask import Flask, render_template, request
 from flask_cors import CORS
 from jinja2 import TemplateNotFound as JinjaTemplateNotFound
 from werkzeug.exceptions import NotFound
-
-# ==== .env 読み込み ====
-load_dotenv()
 
 # ==== config（.env 反映の集約） ====
 from config import (
@@ -60,10 +66,12 @@ try:
 except Exception:
     # ログ初期化は任意。失敗しても続行する。
     logging.basicConfig(level=logging.INFO)
+
 print("=== 環境変数チェック ===")
 print(f"AZURE_STORAGE_ACCOUNT_NAME: {os.getenv('AZURE_STORAGE_ACCOUNT_NAME')}")
 print(f"BACKEND_BASE: {os.getenv('BACKEND_BASE')}")
 print(f"AZURE_STORAGE_CONNECTION_STRING: {os.getenv('AZURE_STORAGE_CONNECTION_STRING', '')[:50]}...")
+
 # ---- 起動時に URL マップをログへ出力（エンドポイント名ズレ検知用） ----
 def _log_url_map(flask_app: Flask) -> None:
     try:
