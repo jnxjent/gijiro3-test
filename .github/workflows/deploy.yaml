@@ -17,13 +17,35 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Setup Python for Web
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install web dependencies into package folder
+        run: |
+          python -m pip install --upgrade pip
+          mkdir -p .python_packages/lib/site-packages
+          pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+
+      - name: Set Web App settings
+        run: |
+          az webapp config appsettings set \
+            --name "${{ secrets.AZURE_WEBAPP_NAME_TEST }}" \
+            --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+            --settings \
+              SCM_DO_BUILD_DURING_DEPLOYMENT=false \
+              PYTHONPATH=/home/site/wwwroot/.python_packages/lib/site-packages
+
       - name: Build web artifact (zip)
         run: |
           zip -r build.zip . \
             -x "ProcessAudioFunction/**" \
                ".git/**" ".github/**" \
-               "*/__pycache__/**" "*.log" "*.tar" "*.tar.gz" "*.zip" \
-               "GIJIRO BACKUP/**" "GIJIRO_BACKUP/**" "backup/**" "BACKUP/**"
+               "*/__pycache__/**" "**/__pycache__/**" \
+               "*.log" "*.tar" "*.tar.gz" "*.zip" \
+               "GIJIRO BACKUP/**" "GIJIRO_BACKUP/**" "backup/**" "BACKUP/**" \
+               ".venv/**" "venv/**" ".pytest_cache/**" ".mypy_cache/**"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
@@ -44,15 +66,24 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Setup Python for Function
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
+      - name: Install function dependencies
         run: |
           cd ProcessAudioFunction
+          python -m pip install --upgrade pip
           pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+
+      - name: Set Function App settings
+        run: |
+          az functionapp config appsettings set \
+            --name "${{ secrets.AZURE_FUNCTIONAPP_NAME_TEST }}" \
+            --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+            --settings \
+              SCM_DO_BUILD_DURING_DEPLOYMENT=false
 
       - name: Deploy to Azure Function
         uses: azure/functions-action@v1
