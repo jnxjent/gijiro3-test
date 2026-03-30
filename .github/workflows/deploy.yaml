@@ -28,15 +28,6 @@ jobs:
           mkdir -p .python_packages/lib/site-packages
           pip install -r requirements.txt --target=".python_packages/lib/site-packages"
 
-      - name: Set Web App settings
-        run: |
-          az webapp config appsettings set \
-            --name "${{ secrets.AZURE_WEBAPP_NAME_TEST }}" \
-            --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
-            --settings \
-              SCM_DO_BUILD_DURING_DEPLOYMENT=false \
-              PYTHONPATH=/home/site/wwwroot/.python_packages/lib/site-packages
-
       - name: Build web artifact (zip)
         run: |
           zip -r build.zip . \
@@ -76,14 +67,6 @@ jobs:
           cd ProcessAudioFunction
           python -m pip install --upgrade pip
           pip install -r requirements.txt --target=".python_packages/lib/site-packages"
-
-      - name: Set Function App settings
-        run: |
-          az functionapp config appsettings set \
-            --name "${{ secrets.AZURE_FUNCTIONAPP_NAME_TEST }}" \
-            --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
-            --settings \
-              SCM_DO_BUILD_DURING_DEPLOYMENT=false
 
       - name: Deploy to Azure Function
         uses: azure/functions-action@v1
