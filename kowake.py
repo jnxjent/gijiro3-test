@@ -71,7 +71,7 @@ TEMPERATURE = float(os.getenv("TEMPERATURE", 0.7))
 openai.api_key = OPENAI_API_KEY
 openai.api_base = OPENAI_API_BASE
 openai.api_type = "azure"
-openai.api_version = "2024-08-01-preview"
+openai.api_version = "2025-01-01-preview"
 
 deepgram_client = Deepgram(DEEPGRAM_API_KEY)
 TMP_DIR = tempfile.gettempdir()
@@ -204,7 +204,7 @@ async def transcribe_and_correct(source: str, email: str | None = None) -> str:
                     {"role": "user", "content": prompt},
                 ],
                 temperature=0,
-                max_tokens=4000,
+                max_completion_tokens=4000,
             )
             corrected.append(resp.choices[0].message.content)
 

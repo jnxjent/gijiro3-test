@@ -55,7 +55,7 @@ async def extract_meeting_info_and_speakers(
                 {"role":"system","content":"あなたは会議の話者名を推定するアシスタントです。"},
                 {"role":"user","content":sp_prompt}
             ],
-            max_tokens=2000, temperature=0
+            max_completion_tokens=2000, temperature=0
         )
         sp_raw = rsp.choices[0].message.content.strip()
         # JSON 部分のみ抽出
@@ -97,7 +97,7 @@ async def extract_meeting_info_and_speakers(
                     {"role":"system","content":"あなたは会議議事録から指定情報を網羅的に抽出するアシスタントです。"},
                     {"role":"user","content":info_prompt}
                 ],
-                max_tokens=8000, temperature=0.3
+                max_completion_tokens=8000, temperature=0.3
             )
             raw = rsp.choices[0].message.content.strip()
             print(f"[DEBUG] 生レス:\n{raw}")
