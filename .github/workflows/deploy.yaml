@@ -22,11 +22,14 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install web dependencies into package folder
+      - name: Build web virtualenv
+        shell: bash
         run: |
           python -m pip install --upgrade pip
-          mkdir -p .python_packages/lib/site-packages
-          pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+          python -m venv antenv
+          source antenv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Build web artifact (zip)
         run: |
