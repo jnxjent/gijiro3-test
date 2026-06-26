@@ -188,6 +188,7 @@ logger.info("▶▶ Module import success (ffmpeg resolution will run at invocat
 # ─── Function 本体 ────────────────────────────────────────
 async def main(msg: func.QueueMessage) -> None:
     logger.info("▶▶ Function invoked")
+    logger.info(f"▶▶ dequeue_count={msg.dequeue_count}")
 
     try:
         FFMPEG_BIN, FFPROBE_BIN = resolve_ffmpeg_and_ffprobe()
@@ -233,7 +234,7 @@ async def main(msg: func.QueueMessage) -> None:
         logger.info(f"▶▶ STEP2: Faststart applied: {fixed_audio}")
 
         logger.info("▶▶ STEP3-1: Starting transcription")
-        transcript = await transcribe_and_correct(fixed_audio, email=email)
+        transcript = await transcribe_and_correct(fixed_audio, email=email, job_id=job_id)
         logger.info("▶▶ STEP3-2: Transcription completed")
 
         template_path = os.path.join(TMP_DIR, f"{uuid.uuid4()}_template.docx")

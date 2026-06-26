@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from flask import request, render_template, jsonify, redirect, send_file, abort, Response
+import json
 import logging
 import os
 import time
@@ -12,7 +13,7 @@ import ipaddress
 
 from azure.storage.blob import BlobClient
 
-from storage import generate_upload_sas, enqueue_processing
+from storage import generate_upload_sas, enqueue_processing, container_client
 from kowake import (
     load_keywords_from_file,
     get_all_keywords,
@@ -168,6 +169,28 @@ def setup_routes(app):
         if blob_client.exists():
             return jsonify({"status": "Completed", "resultUrl": blob_client.url}), 200
         return jsonify({"status": "Processing"}), 202
+
+    # ─────────────────────────────────────────
+    # チャンク進捗
+    # ─────────────────────────────────────────
+    @app.route("/api/process/<job_id>/progress")
+    def api_progress(job_id):
+        chunk_count = 0
+        total_chunks = None
+        try:
+            blobs = list(container_client.list_blobs(name_starts_with=f"transcripts/{job_id}/"))
+            chunk_count = sum(
+                1 for b in blobs
+                if not b.name.endswith("corrected.txt")
+                and not b.name.endswith("meta.json")
+            )
+            meta_client = container_client.get_blob_client(f"transcripts/{job_id}/meta.json")
+            if meta_client.exists():
+                meta = json.loads(meta_client.download_blob().readall())
+                total_chunks = meta.get("totalChunks")
+        except Exception:
+            pass
+        return jsonify({"completedChunks": chunk_count, "totalChunks": total_chunks}), 200
 
     # ─────────────────────────────────────────
     # ダウンロード

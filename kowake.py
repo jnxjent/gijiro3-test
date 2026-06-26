@@ -20,6 +20,7 @@ from deepgram import Deepgram
 import openai
 
 from storage import upload_to_blob, download_blob
+from azure.core.exceptions import ResourceNotFoundError
 
 # ── ロガー設定 ─────────────────────────────────────────
 logger = logging.getLogger("ProcessAudioFunction")
@@ -31,6 +32,62 @@ if APP_DIR not in sys.path:
     sys.path.insert(0, APP_DIR)
 
 from send_guard import mark_once, unmark  # ★ 冪等ガード
+
+# ── 書き起こしキャッシュ（リトライ時の Deepgram 再課金防止） ──────────────
+def _chunk_blob_path(job_id: str, idx: int) -> str:
+    return f"transcripts/{job_id}/{idx}.txt"
+
+def _full_blob_path(job_id: str) -> str:
+    return f"transcripts/{job_id}/corrected.txt"
+
+def _load_chunk_cache(job_id: str, idx: int) -> "str | None":
+    tmp = os.path.join(TMP_DIR, f"cache_{job_id}_{idx}.txt")
+    try:
+        download_blob(_chunk_blob_path(job_id, idx), tmp)
+        with open(tmp, encoding="utf-8") as f:
+            return f.read()
+    except ResourceNotFoundError:
+        return None
+
+def _save_chunk_cache(job_id: str, idx: int, text: str) -> None:
+    tmp = os.path.join(TMP_DIR, f"cache_{job_id}_{idx}.txt")
+    with open(tmp, "w", encoding="utf-8") as f:
+        f.write(text)
+    with open(tmp, "rb") as f:
+        upload_to_blob(_chunk_blob_path(job_id, idx), f, add_audio_prefix=False)
+    logger.info(f"[CACHE] saved chunk={idx} job={job_id}")
+
+def _load_full_cache(job_id: str) -> "str | None":
+    tmp = os.path.join(TMP_DIR, f"cache_{job_id}_full.txt")
+    try:
+        download_blob(_full_blob_path(job_id), tmp)
+        with open(tmp, encoding="utf-8") as f:
+            return f.read()
+    except ResourceNotFoundError:
+        return None
+
+def _save_full_cache(job_id: str, text: str) -> None:
+    tmp = os.path.join(TMP_DIR, f"cache_{job_id}_full.txt")
+    try:
+        with open(tmp, "w", encoding="utf-8") as f:
+            f.write(text)
+        with open(tmp, "rb") as f:
+            upload_to_blob(_full_blob_path(job_id), f, add_audio_prefix=False)
+        logger.info(f"[CACHE] saved full result job={job_id}")
+    except Exception as e:
+        logger.warning(f"[CACHE] save full failed job={job_id}: {e}")
+
+def _save_chunk_meta(job_id: str, total_chunks: int) -> None:
+    """チャンク総数をBlobに保存（進捗API用）"""
+    tmp = os.path.join(TMP_DIR, f"meta_{job_id}.json")
+    try:
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump({"totalChunks": total_chunks}, f)
+        with open(tmp, "rb") as f:
+            upload_to_blob(f"transcripts/{job_id}/meta.json", f, add_audio_prefix=False)
+        logger.info(f"[PROGRESS] totalChunks={total_chunks} saved for job={job_id}")
+    except Exception as e:
+        logger.warning(f"[PROGRESS] meta save failed: {e}")
 
 # ── 1) ffmpeg / ffprobe パス検出 ───────────────────────────────
 ffmpeg_path = os.getenv("FFMPEG_PATH")
@@ -86,7 +143,17 @@ DISABLE_EXPANSION_REPLACEMENT = os.getenv("DISABLE_EXPANSION_REPLACEMENT", "1").
 # 音声 → Deepgram → OpenAI 整形
 # ──────────────────────────────────────────────────────────────
 async def _transcribe_chunk(job_id: str, idx: int, chunk_path: str) -> str:
-    """1チャンクの書き起こし（冪等ガードつき）"""
+    """1チャンクの書き起こし（キャッシュ＋冪等ガードつき）"""
+    # ★ キャッシュ確認（リトライ時は Deepgram をスキップして結果を再利用）
+    cached = _load_chunk_cache(job_id, idx)
+    if cached is not None:
+        logger.info(f"[CACHE] chunk={idx} cache hit job={job_id}")
+        try:
+            os.remove(chunk_path)
+        except Exception:
+            pass
+        return cached
+
     wav_path = os.path.join(TMP_DIR, f"{uuid.uuid4()}_chunk_{idx}.wav")
     subprocess.run(
         [ffmpeg_path, "-y", "-i", chunk_path, "-ar", "16000", "-ac", "1", "-f", "wav", wav_path],
@@ -108,8 +175,7 @@ async def _transcribe_chunk(job_id: str, idx: int, chunk_path: str) -> str:
 
     # ★ 冪等：最初の1回だけ通す（重送・重課金を遮断）
     if not mark_once(job_id, idx):
-        print(f"[INFO] Skip duplicated send: job={job_id} chunk={idx}", file=sys.stderr, flush=True)
-        return ""
+        raise RuntimeError(f"Inconsistent state: sentflag exists but cache missing for job={job_id} chunk={idx}")
 
     try:
         resp = await deepgram_client.transcription.prerecorded(
@@ -123,11 +189,20 @@ async def _transcribe_chunk(job_id: str, idx: int, chunk_path: str) -> str:
         raise
 
     uts = resp.get("results", {}).get("utterances", []) or []
-    return "\n".join(f"[Speaker {u.get('speaker')}] {u.get('transcript')}" for u in uts)
+    text = "\n".join(f"[Speaker {u.get('speaker')}] {u.get('transcript')}" for u in uts)
+    _save_chunk_cache(job_id, idx, text)
+    return text
 
 
-async def transcribe_and_correct(source: str, email: str | None = None) -> str:
+async def transcribe_and_correct(source: str, email: str | None = None, job_id: str | None = None) -> str:
     """音声を書き起こし、整形し、キーワード置換を行う（email対応版）"""
+    # ★ 全文キャッシュ確認（OpenAI整形まで完了済みならスキップ）
+    if job_id:
+        cached_full = _load_full_cache(job_id)
+        if cached_full is not None:
+            logger.info(f"[CACHE] full result cache hit job={job_id}, skipping all processing")
+            return cached_full
+
     # 1) URL判定 & ダウンロード
     if source.lower().startswith("http"):
         parsed = urlparse(source)
@@ -144,7 +219,9 @@ async def transcribe_and_correct(source: str, email: str | None = None) -> str:
         base_key = os.path.abspath(source)
 
     # ★ 同一音源で安定する job_id（冪等フラグのキー）
-    job_id = uuid.uuid5(uuid.NAMESPACE_URL, base_key).hex[:16]
+    # Queue から渡された job_id を優先（リトライ間で安定する）
+    if not job_id:
+        job_id = uuid.uuid5(uuid.NAMESPACE_URL, base_key).hex[:16]
 
     # 2) Fast-Start 適用
     ext = os.path.splitext(local_audio)[1]
@@ -181,6 +258,10 @@ async def transcribe_and_correct(source: str, email: str | None = None) -> str:
         chunk_paths.append((idx, out_path))
         idx += 1
         start += step
+
+    # チャンク分割完了 → totalChunks を Blob 保存（進捗 API 用）
+    if job_id:
+        _save_chunk_meta(job_id, len(chunk_paths))
 
     # 5) 並列送信 → 整形AI
     corrected: list[str] = []
@@ -226,6 +307,10 @@ async def transcribe_and_correct(source: str, email: str | None = None) -> str:
 
     # ★ Azure Functions ログに出力
     logger.info(f"[KEYWORD] replace hit = {hit}, email={email}")
+
+    # ★ 全文結果をキャッシュ保存（リトライ時の再処理防止）
+    if job_id:
+        _save_full_cache(job_id, replaced_text)
 
     return replaced_text
 

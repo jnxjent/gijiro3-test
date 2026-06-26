@@ -4,12 +4,12 @@
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
     "version": "[4.*, 5.0.0)"
   },
-  "functionTimeout": "00:10:00",
+  "functionTimeout": "04:00:00",
   "extensions": {
     "queues": {
       "messageEncoding": "None",
-      "maxDequeueCount": 100,
-      "visibilityTimeout": "01:00:00"
+      "maxDequeueCount": 10,
+      "visibilityTimeout": "05:00:00"
     }
   },
   "logging": {

@@ -1,8 +1,15 @@
 {
   "version": "2.0",
-  "isDefaultHostConfig": true,
   "extensionBundle": {
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
     "version": "[4.*, 5.0.0)"
+  },
+  "functionTimeout": "04:00:00",
+  "extensions": {
+    "queues": {
+      "messageEncoding": "none",
+      "maxDequeueCount": 10,
+      "visibilityTimeout": "05:00:00"
+    }
   }
 }

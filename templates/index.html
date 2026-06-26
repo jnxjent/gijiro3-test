@@ -64,6 +64,31 @@
     .keyword-desc{font-size:14px;margin-top:6px;color:#555;}
 
     .status-msg{margin-top:12px;font-size:14px;color:#333;}
+
+    /* ── プログレスバー ── */
+    .progress-wrap{
+      display:none;width:100%;margin-top:10px;
+      padding:0 24px;box-sizing:border-box;
+    }
+    .progress-header{
+      position:relative;display:flex;justify-content:center;align-items:center;
+      margin-bottom:5px;
+    }
+    .progress-label{font-size:13px;color:#555;text-align:center;}
+    .progress-pct{
+      position:absolute;right:0;
+      font-size:13px;font-weight:bold;color:#007BFF;
+    }
+    .progress-track{
+      width:100%;height:18px;
+      background:#e0e0e0;border-radius:9px;overflow:hidden;
+    }
+    .progress-bar{
+      height:100%;width:0%;
+      background:linear-gradient(90deg,#28a745 0%,#5cd65c 100%);
+      border-radius:9px;
+      transition:width .4s ease;
+    }
   </style>
 </head>
 
@@ -84,6 +109,16 @@
     </div>
 
     <button class="upload-btn" onclick="startUpload()">アップロード</button>
+
+    <div class="progress-wrap" id="progress_wrap">
+      <div class="progress-header">
+        <span class="progress-label" id="progress_label">処理中...</span>
+        <span class="progress-pct" id="progress_pct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-bar" id="progress_bar"></div>
+      </div>
+    </div>
     <div class="status-msg" id="status_msg"></div>
 
     <div class="download-link">
@@ -103,8 +138,6 @@
   <script>
     // ===== 共通ヘルパ =====
     const FUNCTION_KEY = document.querySelector('meta[name="function-key"]').getAttribute('content');
-
-    // ★ ここだけ変更 → サーバー値を直接使う
     const MAX_UPLOAD_BYTES = {{ max_bytes|int }};
 
     function bytesToMB(b){ return Math.round((b/1024/1024)*10)/10; }
@@ -125,13 +158,11 @@
         const ct = res.headers.get("content-type") || "";
         const maybeJson = ct.includes("application/json");
         let data = null;
-
         if (maybeJson) {
           data = await res.json().catch(()=>null);
         } else {
           data = { message: await res.text().catch(()=>null) };
         }
-
         if (!res.ok) {
           const code = res.status || fallbackCode;
           const msg  = (data && (data.message || data.error)) || `HTTP ${code} error`;
@@ -143,6 +174,44 @@
         gotoError(408, "ネットワークが不安定です。再度お試しください。");
         throw e;
       }
+    }
+
+    // ===== プログレスバー =====
+    let _displayPct = 0;
+
+    function setProgress(pct, label) {
+      const clamped = Math.min(Math.max(pct, 0), 100);
+      _displayPct = Math.max(_displayPct, clamped);
+      document.getElementById("progress_wrap").style.display = "block";
+      document.getElementById("progress_bar").style.width = _displayPct + "%";
+      document.getElementById("progress_pct").innerText = Math.round(_displayPct) + "%";
+      if (label) document.getElementById("progress_label").innerText = label;
+    }
+
+    // XHR でファイルを Blob Storage へ PUT（アップロード進捗つき）
+    function putBlobXHR(file, uploadUrl, contentType, onProgress) {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("PUT", uploadUrl);
+        xhr.setRequestHeader("x-ms-blob-type", "BlockBlob");
+        xhr.setRequestHeader("Content-Type", contentType);
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total);
+        };
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 400) {
+            resolve();
+          } else {
+            gotoError(xhr.status, "ストレージへのアップロードに失敗しました。");
+            reject(new Error("Blob PUT failed: " + xhr.status));
+          }
+        };
+        xhr.onerror = () => {
+          gotoError(408, "ネットワークエラーが発生しました。");
+          reject(new Error("XHR network error"));
+        };
+        xhr.send(file);
+      });
     }
 
     async function startUpload(){
@@ -161,42 +230,46 @@
         return;
       }
 
-      statusMsg.innerText="アップロード中...";
+      _displayPct = 0;
+      statusMsg.innerText = "";
+      setProgress(0, "アップロード中...");
 
-      async function uploadToBlob(file,path,isAudio=true){
-        const sasRes = await fetchJsonWithErrors(`/api/blob/sas?name=${encodeURIComponent(path)}`, { method:"GET" }, 502);
+      const audioShare = audioFile.size / totalBytes;
+
+      async function uploadToBlob(file, path, isAudio) {
+        const sasRes = await fetchJsonWithErrors(
+          `/api/blob/sas?name=${encodeURIComponent(path)}`, { method:"GET" }, 502
+        );
         const { uploadUrl, blobUrl } = sasRes || {};
         if (!uploadUrl || !blobUrl) {
           gotoError(500, "アップロード先の取得に失敗しました。");
           throw new Error("SAS missing");
         }
-
-        const headers={"x-ms-blob-type":"BlockBlob"};
-        headers["Content-Type"]=file.type||
-          (isAudio?"audio/mp4":
+        const ct = file.type ||
+          (isAudio ? "audio/mp4" :
            "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 
-        const putRes = await fetch(uploadUrl,{method:"PUT",headers,body:file}).catch(()=>null);
-        if (!putRes || !putRes.ok) {
-          const code = putRes ? putRes.status : 408;
-          gotoError(code, "ストレージへのアップロードに失敗しました。");
-          throw new Error("Blob PUT failed");
-        }
+        const baseOffset = isAudio ? 0 : audioShare * 9;
+        const fileShare  = isAudio ? audioShare : (1 - audioShare);
+        await putBlobXHR(file, uploadUrl, ct, (ratio) => {
+          setProgress(baseOffset + ratio * fileShare * 9, "アップロード中...");
+        });
         return blobUrl;
       }
 
       try{
-        const audioBlobUrl=await uploadToBlob(audioFile,"audio/"+audioFile.name,true);
-        const wordBlobUrl =await uploadToBlob(wordFile ,"word/"+wordFile.name ,false);
-        statusMsg.innerText="ジョブ登録中...";
+        const audioBlobUrl = await uploadToBlob(audioFile, "audio/"+audioFile.name, true);
+        const wordBlobUrl  = await uploadToBlob(wordFile,  "word/"+wordFile.name,  false);
 
-        const data = await fetchJsonWithErrors("/api/process",{
-          method:"POST",
-          headers:{
-            "Content-Type":"application/json",
-            "x-functions-key":FUNCTION_KEY
+        setProgress(9, "ジョブ登録中...");
+
+        const data = await fetchJsonWithErrors("/api/process", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-functions-key": FUNCTION_KEY
           },
-          body:JSON.stringify({blobUrl:audioBlobUrl,templateBlobUrl:wordBlobUrl})
+          body: JSON.stringify({ blobUrl: audioBlobUrl, templateBlobUrl: wordBlobUrl })
         }, 500);
 
         if (!data || !data.jobId) {
@@ -204,42 +277,77 @@
           return;
         }
 
-        statusMsg.innerText=`ジョブID: ${data.jobId} 登録完了。処理中...`;
-        pollForResult(data.jobId);
+        setProgress(10, "処理中...");
 
-      }catch(err){
+        const audioMB = audioFile.size / (1024 * 1024);
+        const audioExt = (audioFile.name.split('.').pop() || '').toLowerCase();
+        const estimatedSec = audioExt === 'wav'
+          ? Math.max(15, audioMB * 2.1)
+          : Math.max(15, 102 + audioMB * 0.31);
+
+        const processStartTime = Date.now();
+        pollForResult(data.jobId, estimatedSec, processStartTime);
+
+      } catch(err) {
         console.error(err);
-        statusMsg.innerText="アップロードまたは処理開始に失敗しました。";
+        statusMsg.innerText = "アップロードまたは処理開始に失敗しました。";
       }
     }
 
-    async function pollForResult(jobId){
-      const statusMsg=document.getElementById("status_msg");
-      const interval=setInterval(async()=>{
-        try{
-          const res = await fetch(`/api/process/${jobId}/status`,
-                                  {headers:{"x-functions-key":FUNCTION_KEY}});
-          if (res.status === 200) {
+    async function pollForResult(jobId, estimatedSec, processStartTime) {
+      const interval = setInterval(async () => {
+        try {
+          const [statusRes, progressRes] = await Promise.all([
+            fetch(`/api/process/${jobId}/status`, { headers: { "x-functions-key": FUNCTION_KEY } }),
+            fetch(`/api/process/${jobId}/progress`).catch(() => null)
+          ]);
+
+          if (statusRes.status === 200) {
             clearInterval(interval);
-            statusMsg.innerText="処理完了！結果をダウンロード中...";
-            window.location.href="/results/"+jobId;
-          } else if (res.status === 202) {
-          } else if (res.status === 504) {
+            setProgress(95, "処理完了中...");
+            setTimeout(() => {
+              setProgress(100, "処理完了！ダウンロード中...");
+              window.location.href = "/results/" + jobId;
+            }, 500);
+            return;
+          } else if (statusRes.status === 504) {
             clearInterval(interval);
             gotoError(504, "処理が時間内に完了しませんでした。", jobId);
-          } else if (res.status === 413) {
+            return;
+          } else if (statusRes.status === 413) {
             clearInterval(interval);
             gotoError(413, "アップロード上限を超えています。", jobId);
-          } else if (res.status >= 400) {
+            return;
+          } else if (statusRes.status >= 400) {
             clearInterval(interval);
-            const msg = await res.text().catch(()=> "処理中にエラーが発生しました。");
-            gotoError(res.status, msg, jobId);
+            const msg = await statusRes.text().catch(() => "処理中にエラーが発生しました。");
+            gotoError(statusRes.status, msg, jobId);
+            return;
           }
-        }catch(e){
+
+          const elapsedSec = (Date.now() - processStartTime) / 1000;
+          const timePct = 10 + Math.min(1, elapsedSec / estimatedSec) * 85;
+
+          let processPct = 0;
+          if (progressRes && progressRes.ok) {
+            try {
+              const prog = await progressRes.json();
+              const completedChunks = prog.completedChunks || 0;
+              const totalChunks = prog.totalChunks;
+              if (totalChunks && totalChunks >= 2) {
+                processPct = 10 + (completedChunks / totalChunks) * 85;
+              }
+            } catch (e) { /* 無視 */ }
+          }
+
+          const newPct = Math.min(95, Math.max(timePct, processPct));
+          setProgress(newPct, "処理中...");
+
+        } catch(e) {
           clearInterval(interval);
           gotoError(408, "結果の取得中にネットワークエラーが発生しました。", jobId);
         }
-      },3000);
+      }, 3000);
     }
   </script>
 </body>
