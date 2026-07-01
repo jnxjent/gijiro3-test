@@ -269,6 +269,16 @@ def setup_routes(app):
         return redirect("/keywords")
 
     # ─────────────────────────────────────────
+    # エラーページ（JS の gotoError() からリダイレクト先）
+    # ─────────────────────────────────────────
+    @app.route("/error")
+    def error_page():
+        code = request.args.get("code", "500")
+        message = request.args.get("message", "エラーが発生しました。")
+        job_id = request.args.get("job_id")
+        return render_template("error.html", code=code, message=message, job_id=job_id), 200
+
+    # ─────────────────────────────────────────
     # エラーハンドラ
     # ─────────────────────────────────────────
     @app.errorhandler(404)
