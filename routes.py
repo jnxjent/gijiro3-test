@@ -26,6 +26,13 @@ from kowake import (
 from config import MAX_CONTENT_LENGTH_BYTES
 
 
+def _safe_int(value, default=0):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 # ─────────────────────────────────────────────
 # 許可IP設定
 # ─────────────────────────────────────────────
@@ -175,22 +182,35 @@ def setup_routes(app):
     # ─────────────────────────────────────────
     @app.route("/api/process/<job_id>/progress")
     def api_progress(job_id):
-        chunk_count = 0
+        blob_count = 0
         total_chunks = None
+        progress_data = {}
         try:
             blobs = list(container_client.list_blobs(name_starts_with=f"transcripts/{job_id}/"))
-            chunk_count = sum(
+            blob_count = sum(
                 1 for b in blobs
                 if not b.name.endswith("corrected.txt")
                 and not b.name.endswith("meta.json")
+                and not b.name.endswith("progress.json")
             )
             meta_client = container_client.get_blob_client(f"transcripts/{job_id}/meta.json")
             if meta_client.exists():
                 meta = json.loads(meta_client.download_blob().readall())
                 total_chunks = meta.get("totalChunks")
+            prog_client = container_client.get_blob_client(f"transcripts/{job_id}/progress.json")
+            if prog_client.exists():
+                progress_data = json.loads(prog_client.download_blob().readall())
+                if progress_data.get("totalChunks"):
+                    total_chunks = progress_data["totalChunks"]
         except Exception:
             pass
-        return jsonify({"completedChunks": chunk_count, "totalChunks": total_chunks}), 200
+        completed_chunks = max(blob_count, _safe_int(progress_data.get("completedChunks"), 0))
+        result = {
+            "completedChunks": completed_chunks,
+            "totalChunks": total_chunks,
+            **{k: v for k, v in progress_data.items() if k not in ("completedChunks", "totalChunks")},
+        }
+        return jsonify(result), 200
 
     # ─────────────────────────────────────────
     # ダウンロード

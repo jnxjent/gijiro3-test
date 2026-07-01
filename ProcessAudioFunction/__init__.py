@@ -196,7 +196,8 @@ async def main(msg: func.QueueMessage) -> None:
         logger.exception("▶▶ FFMPEG/FFPROBE resolution failed")
         raise
 
-    from kowake import transcribe_and_correct
+    # ★ 遅延 import：ここで ffmpeg 環境が整った後にロード
+    from kowake import transcribe_and_correct, _save_progress
 
     raw = msg.get_body().decode("utf-8", errors="replace")
     logger.info("▶▶ RAW payload: %s", raw)
@@ -221,6 +222,7 @@ async def main(msg: func.QueueMessage) -> None:
 
         ext = _guess_ext_from_url(blob_url, default=".mp4")
         local_audio = os.path.join(TMP_DIR, f"{uuid.uuid4()}{ext}")
+        _save_progress(job_id, "downloading", "音声ファイルを準備しています")
         logger.info(f"▶▶ STEP1-1: Downloading audio from {blob_url}")
         download_blob(blob_url, local_audio)
         logger.info(f"▶▶ STEP1-2: Audio downloaded to {local_audio}")
@@ -243,6 +245,7 @@ async def main(msg: func.QueueMessage) -> None:
         logger.info(f"▶▶ STEP4-2: Template downloaded to {template_path}")
 
         logger.info("▶▶ STEP5-1: Starting document processing")
+        _save_progress(job_id, "writing", "Wordファイルを作成しています")
         meeting_info = await extract_meeting_info_and_speakers(transcript, template_path)
 
         local_docx = os.path.join(TMP_DIR, f"{job_id}.docx")
@@ -253,7 +256,7 @@ async def main(msg: func.QueueMessage) -> None:
 
         with open(local_docx, "rb") as fp:
             upload_to_blob(blob_docx, fp, add_audio_prefix=False)
-
+        _save_progress(job_id, "completed", "完了しました")
         logger.info(f"Job {job_id} completed, saved to {blob_docx}")
 
     except Exception:

@@ -89,6 +89,28 @@ def _save_chunk_meta(job_id: str, total_chunks: int) -> None:
     except Exception as e:
         logger.warning(f"[PROGRESS] meta save failed: {e}")
 
+def _save_progress(job_id: str, phase: str, label: str, **extra) -> None:
+    if not job_id:
+        return
+    payload = {
+        "phase": phase,
+        "label": label,
+        "updatedAt": datetime.utcnow().isoformat() + "Z",
+        **extra,
+    }
+    tmp = os.path.join(TMP_DIR, f"progress_{job_id}.json")
+    try:
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False)
+        with open(tmp, "rb") as f:
+            upload_to_blob(f"transcripts/{job_id}/progress.json", f, add_audio_prefix=False)
+        logger.info(
+            "[PROGRESS] job=%s phase=%s %s", job_id, phase,
+            {k: v for k, v in extra.items() if k.endswith("Chunks") or k in ("batchIndex", "batchTotal")}
+        )
+    except Exception as e:
+        logger.warning("[PROGRESS] save failed job=%s phase=%s err=%s", job_id, phase, e)
+
 # ── 1) ffmpeg / ffprobe パス検出 ───────────────────────────────
 ffmpeg_path = os.getenv("FFMPEG_PATH")
 ffprobe_path = os.getenv("FFPROBE_PATH")
@@ -200,6 +222,7 @@ async def transcribe_and_correct(source: str, email: str | None = None, job_id: 
     if job_id:
         cached_full = _load_full_cache(job_id)
         if cached_full is not None:
+            _save_progress(job_id, "cached", "以前の処理結果を利用しています")
             logger.info(f"[CACHE] full result cache hit job={job_id}, skipping all processing")
             return cached_full
 
@@ -223,7 +246,10 @@ async def transcribe_and_correct(source: str, email: str | None = None, job_id: 
     if not job_id:
         job_id = uuid.uuid5(uuid.NAMESPACE_URL, base_key).hex[:16]
 
+    _save_progress(job_id, "started", "処理を開始しました")
+
     # 2) Fast-Start 適用
+    _save_progress(job_id, "faststart", "音声ファイルを変換しています")
     ext = os.path.splitext(local_audio)[1]
     fixed = os.path.join(TMP_DIR, f"{uuid.uuid4()}_fixed{ext}")
     subprocess.run(
@@ -232,6 +258,7 @@ async def transcribe_and_correct(source: str, email: str | None = None, job_id: 
     )
 
     # 3) 長さ取得 (秒)
+    _save_progress(job_id, "probing", "音声の長さを確認しています")
     cmd = [
         ffprobe_path,
         "-v", "error",
@@ -246,6 +273,7 @@ async def transcribe_and_correct(source: str, email: str | None = None, job_id: 
     step = chunk_len - overlap
 
     # 4) ffmpeg でチャンク分割
+    _save_progress(job_id, "splitting", "音声を分割しています")
     chunk_paths: list[tuple[int, str]] = []
     start = 0.0
     idx = 0
@@ -262,32 +290,49 @@ async def transcribe_and_correct(source: str, email: str | None = None, job_id: 
     # チャンク分割完了 → totalChunks を Blob 保存（進捗 API 用）
     if job_id:
         _save_chunk_meta(job_id, len(chunk_paths))
+    _save_progress(job_id, "transcribing", "音声を文字起こししています",
+                   completedChunks=0, totalChunks=len(chunk_paths),
+                   correctedChunks=0, totalCorrectChunks=len(chunk_paths))
 
-    # 5) 並列送信 → 整形AI
-    corrected: list[str] = []
+    # 5a) Deepgram 並列書き起こし（全チャンク完了まで）
+    transcribed_texts: list[str] = []
+    batch_total = (len(chunk_paths) + 5) // 6
     for i in range(0, len(chunk_paths), 6):
+        batch_idx = i // 6
         tasks = [_transcribe_chunk(job_id, cidx, path) for cidx, path in chunk_paths[i: i + 6]]
         results = await asyncio.gather(*tasks)
 
         for text in results:
-            if not text:
-                continue  # duplicated / 空は無視
+            if text:
+                transcribed_texts.append(text)
 
-            prompt = (
-                "以下の音声書き起こしを自然な日本語にしてください。\n\n"
-                f"{text}\n\n"
-                "【出力形式】\n[Speaker X] 発話内容\n[Speaker X] 発話内容\n"
-            )
-            resp = openai.ChatCompletion.create(
-                engine=DEPLOYMENT_ID,
-                messages=[
-                    {"role": "system", "content": "あなたは日本語整形アシスタントです。"},
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0,
-                max_completion_tokens=4000,
-            )
-            corrected.append(resp.choices[0].message.content)
+        completed_count = min(i + 6, len(chunk_paths))
+        _save_progress(job_id, "transcribing", "音声を文字起こししています",
+                       completedChunks=completed_count, totalChunks=len(chunk_paths),
+                       correctedChunks=0, totalCorrectChunks=len(chunk_paths),
+                       batchIndex=batch_idx + 1, batchTotal=batch_total)
+
+    # 5b) OpenAI 補正（全 Deepgram 完了後）
+    corrected: list[str] = []
+    for idx, text in enumerate(transcribed_texts, start=1):
+        prompt = (
+            "以下の音声書き起こしを自然な日本語にしてください。\n\n"
+            f"{text}\n\n"
+            "【出力形式】\n[Speaker X] 発話内容\n[Speaker X] 発話内容\n"
+        )
+        resp = openai.ChatCompletion.create(
+            engine=DEPLOYMENT_ID,
+            messages=[
+                {"role": "system", "content": "あなたは日本語整形アシスタントです。"},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0,
+            max_completion_tokens=4000,
+        )
+        corrected.append(resp.choices[0].message.content)
+        _save_progress(job_id, "correcting", "議事録を整えています",
+                       completedChunks=len(chunk_paths), totalChunks=len(chunk_paths),
+                       correctedChunks=idx, totalCorrectChunks=len(transcribed_texts))
 
     full = "\n".join(corrected)
 
@@ -303,6 +348,9 @@ async def transcribe_and_correct(source: str, email: str | None = None, job_id: 
         pass
 
     # ★ 置換ステップ（ユーザー別）
+    _save_progress(job_id, "keyword_replacing", "キーワードを反映しています",
+                   completedChunks=len(chunk_paths), totalChunks=len(chunk_paths),
+                   correctedChunks=len(corrected), totalCorrectChunks=len(transcribed_texts))
     replaced_text, hit = _apply_keyword_replacements(full, email=email)
 
     # ★ Azure Functions ログに出力

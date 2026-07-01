@@ -283,7 +283,9 @@
         const audioExt = (audioFile.name.split('.').pop() || '').toLowerCase();
         const estimatedSec = audioExt === 'wav'
           ? Math.max(15, audioMB * 2.1)
-          : Math.max(15, 102 + audioMB * 0.31);
+          : audioExt === 'm4a'
+            ? Math.max(60, audioMB * 3.6)
+            : Math.max(15, 102 + audioMB * 0.31);
 
         const processStartTime = Date.now();
         pollForResult(data.jobId, estimatedSec, processStartTime);
@@ -292,6 +294,30 @@
         console.error(err);
         statusMsg.innerText = "アップロードまたは処理開始に失敗しました。";
       }
+    }
+
+    function phaseProgress(prog, elapsedSec, estimatedSec) {
+      const phase = prog && prog.phase;
+      const completedChunks = Number(prog && prog.completedChunks) || 0;
+      const totalChunks = Number(prog && prog.totalChunks) || 0;
+      const correctedChunks = Number(prog && prog.correctedChunks) || 0;
+      const totalCorrectChunks = Number(prog && prog.totalCorrectChunks) || totalChunks || 0;
+
+      if (phase === "transcribing" && totalChunks > 0) {
+        return 25 + Math.min(1, completedChunks / totalChunks) * 45;
+      }
+      if (phase === "correcting" && totalCorrectChunks > 0) {
+        return 70 + Math.min(1, correctedChunks / totalCorrectChunks) * 20;
+      }
+      if (phase === "keyword_replacing") return 92;
+      if (phase === "writing") return 95;
+      if (phase === "completed") return 98;
+      if (["started", "downloading", "faststart", "probing", "splitting"].includes(phase)) {
+        const prepPct = Math.min(1, elapsedSec / Math.max(30, estimatedSec * 0.15));
+        return 10 + prepPct * 15;
+      }
+      // フォールバック: 時間ベースの推定
+      return 10 + Math.min(1, elapsedSec / estimatedSec) * 85;
     }
 
     async function pollForResult(jobId, estimatedSec, processStartTime) {
@@ -326,22 +352,15 @@
           }
 
           const elapsedSec = (Date.now() - processStartTime) / 1000;
-          const timePct = 10 + Math.min(1, elapsedSec / estimatedSec) * 85;
 
-          let processPct = 0;
+          let prog = null;
           if (progressRes && progressRes.ok) {
-            try {
-              const prog = await progressRes.json();
-              const completedChunks = prog.completedChunks || 0;
-              const totalChunks = prog.totalChunks;
-              if (totalChunks && totalChunks >= 2) {
-                processPct = 10 + (completedChunks / totalChunks) * 85;
-              }
-            } catch (e) { /* 無視 */ }
+            try { prog = await progressRes.json(); } catch (e) { /* 無視 */ }
           }
 
-          const newPct = Math.min(95, Math.max(timePct, processPct));
-          setProgress(newPct, "処理中...");
+          const newPct = phaseProgress(prog, elapsedSec, estimatedSec);
+          const label = (prog && prog.label) || "処理中...";
+          setProgress(newPct, label);
 
         } catch(e) {
           clearInterval(interval);
